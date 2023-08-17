@@ -1,0 +1,9 @@
+export enum Contracts {
+  ContractRegistry = '0x64f5219563e28EeBAAd91Ca8D31fa3b36621FD4f',
+  TokenRegistry = '0x1757a98c1333B9dc8D408b194B2279b5AFDF70Cc',
+  Token = '0x6484EB0792c646A4827638Fc1B6F20461418eB00',
+  Locking = '0xf201fFeA8447AB3d43c98Da3349e0749813C9009',
+  Staking = '0xA75E74a5109Ed8221070142D15cEBfFe9642F489'
+}
+
+export default Contracts

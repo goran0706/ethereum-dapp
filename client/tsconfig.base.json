@@ -1,0 +1,38 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/*"],
+      "@contracts": ["libs/shared/abis/src/index.ts"],
+      "@libs/account": ["libs/account/src/index.ts"],
+      "@libs/dashboard": ["libs/dashboard/src/index.ts"],
+      "@libs/limit": ["libs/limit/src/index.ts"],
+      "@libs/locking": ["libs/locking/src/index.ts"],
+      "@libs/page-not-found": ["libs/page-not-found/src/index.ts"],
+      "@libs/staking": ["libs/staking/src/index.ts"],
+      "@libs/swap": ["libs/swap/src/index.ts"],
+      "@libs/yield-calculator": ["libs/yield-calculator/src/index.ts"],
+      "@shared/assets": ["libs/shared/assets/src/index.ts"],
+      "@shared/constants": ["libs/shared/constants/src/index.ts"],
+      "@shared/hooks": ["libs/shared/hooks/src/index.ts"],
+      "@shared/models": ["libs/shared/models/src/index.ts"],
+      "@shared/store": ["libs/shared/store/src/index.ts"],
+      "@shared/ui": ["libs/shared/ui/src/index.ts"],
+      "@utils": ["libs/shared/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
