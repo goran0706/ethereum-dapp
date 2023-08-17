@@ -1,6 +1,6 @@
 # Ethereum Dapp
 
-Demo: https://papaya-pasca-90c9bc.netlify.app/dashboard
+Demo: https://papaya-pasca-90c9bc.netlify.app
 
 
 This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
