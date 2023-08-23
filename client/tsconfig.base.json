@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@abis": ["libs/shared/abis/src/index.ts"],
       "@app/*": ["src/*"],
-      "@contracts": ["libs/shared/abis/src/index.ts"],
       "@libs/account": ["libs/account/src/index.ts"],
       "@libs/dashboard": ["libs/dashboard/src/index.ts"],
       "@libs/limit": ["libs/limit/src/index.ts"],

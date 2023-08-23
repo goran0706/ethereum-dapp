@@ -1,20 +1,10 @@
-export default [
+export const LockingABI = [
   {
     inputs: [
       {
         internalType: 'address[]',
         name: '_tokens',
         type: 'address[]'
-      },
-      {
-        internalType: 'uint256',
-        name: '_minUnlockTime',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: '_exitFeePercentage',
-        type: 'uint256'
       }
     ],
     stateMutability: 'nonpayable',
@@ -85,12 +75,6 @@ export default [
         internalType: 'uint256',
         name: 'unlockTime',
         type: 'uint256'
-      },
-      {
-        indexed: false,
-        internalType: 'bool',
-        name: 'unlocked',
-        type: 'bool'
       }
     ],
     name: 'TokensLocked',
@@ -166,22 +150,12 @@ export default [
         internalType: 'address',
         name: '_beneficiary',
         type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: '_lockIndex',
-        type: 'uint256'
       }
     ],
     name: 'getLockDetails',
     outputs: [
       {
         components: [
-          {
-            internalType: 'address',
-            name: 'beneficiary',
-            type: 'address'
-          },
           {
             internalType: 'uint256',
             name: 'amount',
@@ -209,12 +183,12 @@ export default [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address'
+        internalType: 'enum Locking.LockingPeriod',
+        name: 'period',
+        type: 'uint8'
       }
     ],
-    name: 'getLocksCount',
+    name: 'getLockingPeriodDuration',
     outputs: [
       {
         internalType: 'uint256',
@@ -254,19 +228,6 @@ export default [
   {
     inputs: [
       {
-        internalType: 'address[]',
-        name: 'tokens',
-        type: 'address[]'
-      }
-    ],
-    name: 'importTokens',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
         internalType: 'address',
         name: 'token',
         type: 'address'
@@ -301,9 +262,9 @@ export default [
         type: 'uint256'
       },
       {
-        internalType: 'uint256',
-        name: '_unlockTime',
-        type: 'uint256'
+        internalType: 'enum Locking.LockingPeriod',
+        name: '_lockingPeriod',
+        type: 'uint8'
       }
     ],
     name: 'lockTokens',
@@ -315,22 +276,60 @@ export default [
     inputs: [
       {
         internalType: 'address',
-        name: '',
+        name: '_token',
+        type: 'address'
+      },
+      {
+        internalType: 'address',
+        name: '_beneficiary',
         type: 'address'
       },
       {
         internalType: 'uint256',
-        name: '',
+        name: '_amount',
         type: 'uint256'
+      },
+      {
+        internalType: 'enum Locking.LockingPeriod',
+        name: '_lockingPeriod',
+        type: 'uint8'
+      },
+      {
+        internalType: 'uint256',
+        name: '_deadline',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint8',
+        name: '_v',
+        type: 'uint8'
+      },
+      {
+        internalType: 'bytes32',
+        name: '_r',
+        type: 'bytes32'
+      },
+      {
+        internalType: 'bytes32',
+        name: '_s',
+        type: 'bytes32'
+      }
+    ],
+    name: 'lockTokensWithPermit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address'
       }
     ],
     name: 'lockedBalances',
     outputs: [
-      {
-        internalType: 'address',
-        name: 'beneficiary',
-        type: 'address'
-      },
       {
         internalType: 'uint256',
         name: 'amount',
@@ -351,8 +350,14 @@ export default [
     type: 'function'
   },
   {
-    inputs: [],
-    name: 'minUnlockTime',
+    inputs: [
+      {
+        internalType: 'enum Locking.LockingPeriod',
+        name: '',
+        type: 'uint8'
+      }
+    ],
+    name: 'lockingPeriods',
     outputs: [
       {
         internalType: 'uint256',
@@ -379,6 +384,19 @@ export default [
   {
     inputs: [
       {
+        internalType: 'address[]',
+        name: 'tokens',
+        type: 'address[]'
+      }
+    ],
+    name: 'registerTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
         internalType: 'address',
         name: 'token',
         type: 'address'
@@ -400,24 +418,11 @@ export default [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_minUnlockTime',
+        name: '_exitFee',
         type: 'uint256'
       }
     ],
-    name: 'setMinUnlockTime',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_withdrawalFee',
-        type: 'uint256'
-      }
-    ],
-    name: 'setWithdrawalFee',
+    name: 'setExitFee',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -441,16 +446,6 @@ export default [
         internalType: 'address',
         name: '_token',
         type: 'address'
-      },
-      {
-        internalType: 'address',
-        name: '_beneficiary',
-        type: 'address'
-      },
-      {
-        internalType: 'uint256',
-        name: '_lockIndex',
-        type: 'uint256'
       }
     ],
     name: 'unlockTokens',
@@ -458,4 +453,6 @@ export default [
     stateMutability: 'nonpayable',
     type: 'function'
   }
-]
+] as const
+
+export default LockingABI

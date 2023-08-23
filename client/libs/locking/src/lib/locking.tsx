@@ -1,4 +1,3 @@
-import { Calculator } from '@libs/yield-calculator'
 import { Grid, Stack, Sticky } from '@shared/ui'
 import { Outlet } from 'react-router-dom'
 
@@ -11,7 +10,7 @@ export function Locking() {
       <Sticky>
         <Stack align='start' justify='center'>
           <Outlet />
-          <Calculator />
+          {/* <Calculator /> */}
         </Stack>
       </Sticky>
     </Grid>

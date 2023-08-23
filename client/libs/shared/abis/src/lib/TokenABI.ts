@@ -1,4 +1,4 @@
-export default [
+export const TokenABI = [
   {
     inputs: [
       {
@@ -837,4 +837,6 @@ export default [
     stateMutability: 'nonpayable',
     type: 'function'
   }
-]
+] as const
+
+export default TokenABI

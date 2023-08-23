@@ -1,4 +1,7 @@
+import { ButtonHTMLAttributes, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
+
+import LoaderMini from '../loader-mini/loader-mini'
 
 const sizes = {
   small: css`
@@ -32,7 +35,7 @@ const variations = {
   secondary: css`
     color: var(--color-black-800);
     background: var(--color-black-50);
-    border: 1px solid var(--color-brand-600);
+    // border: 2px solid var(--color-brand-600);
 
     &:hover {
       background-color: var(--color-black-200);
@@ -48,13 +51,18 @@ const variations = {
   `
 }
 
-export interface ButtonProps {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   $block?: boolean
   size?: 'small' | 'medium' | 'large'
   variation?: 'primary' | 'secondary' | 'danger'
+  isLoading?: boolean
+  children: ReactNode
 }
 
-export const Button = styled.button<ButtonProps>`
+const StyledButton = styled.button<ButtonProps>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
@@ -62,5 +70,15 @@ export const Button = styled.button<ButtonProps>`
   ${({ size }) => sizes[size || 'medium']}
   ${({ variation }) => variations[variation || 'primary']}
 `
+
+export const Button = ({ isLoading, children, ...props }: ButtonProps) => {
+  if (!children) return null
+
+  return (
+    <StyledButton {...props}>
+      {isLoading ? <LoaderMini /> : children}
+    </StyledButton>
+  )
+}
 
 export default Button

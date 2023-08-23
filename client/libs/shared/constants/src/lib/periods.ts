@@ -1,9 +1,10 @@
 export enum Periods {
-  '1M' = 1,
-  '3M' = 3,
-  '6M' = 6,
-  '1Y' = 12,
-  '2Y' = 24
+  '1M',
+  '3M',
+  '6M',
+  '1Y',
+  '2Y',
+  '4Y'
 }
 
 export const defaultPeriodSelection: Periods = Periods['1M']

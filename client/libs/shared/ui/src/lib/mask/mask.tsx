@@ -1,4 +1,5 @@
 import { Blur, Blurdark } from '@shared/assets'
+import styled from 'styled-components'
 import { useDarkMode } from 'usehooks-ts'
 
 export interface MaskProps {
@@ -6,10 +7,16 @@ export interface MaskProps {
   height?: string
 }
 
+const StyledImage = styled.img`
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+`
+
 export function Mask({ ...props }: MaskProps) {
   const { isDarkMode } = useDarkMode()
   const mask = isDarkMode ? Blurdark : Blur
-  return <img src={mask} alt='********' {...props} />
+  return <StyledImage src={mask} alt='********' {...props} />
 }
 
 export default Mask

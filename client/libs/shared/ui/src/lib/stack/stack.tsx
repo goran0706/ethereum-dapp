@@ -2,7 +2,7 @@ import { spacings } from '@shared/constants'
 import styled from 'styled-components'
 
 export interface StackProps {
-  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '2xxl' | '2xxl'
   align?: string
   justify?: string
 }

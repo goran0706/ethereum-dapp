@@ -1,4 +1,4 @@
-export default [
+export const ContractRegistryABI = [
   {
     anonymous: false,
     inputs: [
@@ -183,4 +183,6 @@ export default [
     stateMutability: 'nonpayable',
     type: 'function'
   }
-]
+] as const
+
+export default ContractRegistryABI

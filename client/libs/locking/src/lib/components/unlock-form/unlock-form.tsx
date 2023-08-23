@@ -1,4 +1,6 @@
+import { CLEAR_ALERT_DELAY, ContractsInfo } from '@shared/constants'
 import { useCurrencyForm } from '@shared/hooks'
+import { useCurrencySelect } from '@shared/store'
 import {
   AnchorInternal,
   Button,
@@ -10,46 +12,74 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { ChangeEvent, FormEvent } from 'react'
+import { useEffect } from 'react'
+import { formatEther } from 'viem'
+import {
+  useAccount,
+  useContractRead,
+  useContractWrite,
+  useFeeData
+} from 'wagmi'
 
 export function UnlockForm() {
-  const { lockTime, currencyIn, setCurrencyIn, currencyInAmount, setCurrencyInAmount, error } =
-    useCurrencyForm()
+  const { currencyIn, setCurrencyIn } = useCurrencySelect()
+  const {
+    currencyInAmount,
+    errorMessage,
+    incrementBalance,
+    locked,
+    handleCurrencyInAmountChange,
+    handleLockedPercentageClick,
+    handleError,
+    handleErrorClear
+  } = useCurrencyForm()
 
-  const networkFee = 4.23
-  const fiatAmount = 1800
-  const balanceAmount = 100
-  const balanceLabel = 'Balance'
+  const { isConnected, address: beneficiary } = useAccount()
 
-  const handleCurrencyInAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setCurrencyInAmount(value)
-  }
+  const { data: feeData } = useFeeData()
+  const networkFee = feeData?.formatted.gasPrice
+  const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
 
-  const handlePercentageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    const button = e.currentTarget as HTMLButtonElement
-    const percentStr = button.getAttribute('data-percent')
-    if (percentStr !== null) {
-      const percent = parseFloat(percentStr)
-      const result = (percent / balanceAmount) * 100
-      setCurrencyInAmount(result.toString())
+  const { data: exitFee } = useContractRead({
+    ...ContractsInfo.Locking,
+    functionName: 'exitFeePercentage'
+  })
+
+  const txDetails = [
+    { label: 'Network Fee:', value: `~${networkFee}` },
+    { label: 'Exit Fee:', value: `${formatEther(exitFee ?? BigInt(0))}%` }
+  ]
+
+  const { writeAsync: unlockTokens, isLoading: isLoadingUnlock } =
+    useContractWrite({
+      ...ContractsInfo.Locking,
+      functionName: 'unlockTokens'
+    })
+
+  useEffect(() => {
+    const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
+    return () => clearTimeout(id)
+  }, [handleErrorClear])
+
+  const handleUnlock = async (): Promise<void> => {
+    if (isConnected && beneficiary) {
+      try {
+        await unlockTokens({ args: [ContractsInfo.Token.address] })
+        incrementBalance(BigInt(currencyInAmount))
+      } catch (err) {
+        handleError(err)
+      }
     }
-  }
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    alert(`Unlock ${currencyInAmount} ${currencyIn.symbol}`)
   }
 
   return (
     <Panel width='480px' height='fit-content'>
       <Stack>
-        <Flex>
+        <Flex alignItems='center'>
           <AnchorInternal to='/locking/lock'>Lock</AnchorInternal>
           <AnchorInternal to='/locking/unlock'>Unlock</AnchorInternal>
         </Flex>
-        <Form onSubmit={handleSubmit}>
+        <Form>
           <Stack>
             <CurrencyInputPanel
               currency={currencyIn}
@@ -57,18 +87,24 @@ export function UnlockForm() {
               currencyAmount={currencyInAmount}
               onCurrencyAmountChange={handleCurrencyInAmountChange}
               fiatAmount={fiatAmount}
-              balanceAmount={balanceAmount}
-              balanceLabel={balanceLabel}
+              balanceLabel='Locked'
+              balanceAmount={locked}
               renderNativeToken
               renderCurrencyBalance
               renderPercentageButtons
-              onPercentageClick={handlePercentageClick}
+              onPercentageClick={handleLockedPercentageClick}
             />
-            {networkFee && (
-              <TransactionDetails items={[{ label: 'Network Fee', value: `~${networkFee}` }]} />
+            {txDetails && <TransactionDetails items={txDetails} />}
+            {errorMessage && (
+              <TransactionAlert color='red' message={errorMessage} />
             )}
-            {error && <TransactionAlert color='red' message={error.message} />}
-            <Button size='large' type='submit' disabled={!currencyInAmount || !lockTime}>
+            <Button
+              size='large'
+              type='submit'
+              isLoading={isLoadingUnlock}
+              disabled={!isConnected || !beneficiary || !currencyInAmount}
+              onClick={handleUnlock}
+            >
               Unlock
             </Button>
           </Stack>

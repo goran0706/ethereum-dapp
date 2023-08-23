@@ -43,9 +43,13 @@ export function Header() {
 
   return (
     <StyledHeader>
-      <Flex align='center' justify='flex-end' wrap='wrap'>
+      <Flex alignItems='center' justifyContent='flex-end' wrap='wrap'>
         <HeaderItem>
-          <Text>🔥</Text>
+          <Text>
+            <span role='img' aria-label='gas price'>
+              🔥
+            </span>
+          </Text>
           <Text>
             {isFeeLoading
               ? 'Fetching gas price...'
@@ -55,7 +59,11 @@ export function Header() {
           </Text>
         </HeaderItem>
         <HeaderItem>
-          <Text>🧊</Text>
+          <Text>
+            <span role='img' aria-label='block number'>
+              🧊
+            </span>
+          </Text>
           <Text>
             {isBlockNumberLoading
               ? 'Fetching blocknumber...'

@@ -17,6 +17,7 @@ const CurrencySelectWrapper = styled(Flex)`
   cursor: pointer;
   justify-content: space-between; /* Adjust alignment */
   padding: 0.8rem 1.6rem;
+  position: relative;
   width: 150px;
 
   &:hover {

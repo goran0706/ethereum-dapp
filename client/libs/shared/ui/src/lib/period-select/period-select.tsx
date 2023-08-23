@@ -1,3 +1,4 @@
+import { Periods } from '@shared/constants'
 import { ChangeEvent } from 'react'
 import { RxReset } from 'react-icons/rx'
 import styled from 'styled-components'
@@ -16,16 +17,20 @@ const StyledPeriods = styled(Stack)`
   padding: 1.2rem;
 `
 
-const PeriodLabel = styled.label`
+const PeriodLabel = styled(Flex).attrs({ as: 'label' })`
   background-color: var(--color-black-200);
   border-radius: var(--border-radius-lg);
   border: none;
   color: var(--color-brand-600);
   font-size: 1.4rem;
   font-weight: 500;
-  padding: 0.6rem 1.2rem;
   text-align: center;
   cursor: pointer;
+
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     color: var(--color-brand-50);
@@ -44,16 +49,12 @@ export interface PeriodSelectProps {
   onReset: () => void
 }
 
-export enum Periods {
-  '1M' = 1,
-  '3M' = 3,
-  '6M' = 6,
-  '1Y' = 12,
-  '2Y' = 24
-}
-
-export const PeriodSelect: React.FC<PeriodSelectProps> = ({ value, onChange, onReset }) => {
-  const periodsToRender = Object.entries(Periods).slice(0, 5)
+export const PeriodSelect: React.FC<PeriodSelectProps> = ({
+  value,
+  onChange,
+  onReset
+}) => {
+  const periodsToRender = Object.entries(Periods).slice(0, 6)
 
   return (
     <StyledPeriods>
@@ -63,7 +64,7 @@ export const PeriodSelect: React.FC<PeriodSelectProps> = ({ value, onChange, onR
           {Periods[value]}
         </Text>
       </Row>
-      <Flex justify='space-between'>
+      <Flex justifyContent='space-between'>
         <IconButton onClick={onReset}>
           <RxReset />
         </IconButton>
@@ -74,7 +75,7 @@ export const PeriodSelect: React.FC<PeriodSelectProps> = ({ value, onChange, onR
                 hidden
                 type='radio'
                 name='period'
-                checked={value === Number(period[0])}
+                checked={value.toString() === period[0]}
                 value={period[0]}
                 onChange={onChange}
               />

@@ -21,10 +21,10 @@ export const Profile = () => {
   const { data: ensAvatar } = useEnsAvatar({ name: ensName })
 
   return (
-    <ProfileContainer align='center' justify='center' direction='column'>
+    <ProfileContainer alignItems='center' justifyContent='center' flexDirection='column'>
       {ensAvatar ? <img src={ensAvatar} alt='Avatar' /> : <Avatar size={128} address={address} />}
       {isCurrencyMasked ? (
-        <Mask height='24px' />
+        <Mask height='24px' width='100%' />
       ) : (
         <Text fontSize='lg' fontWeight='bold' align='center'>
           {ensName ? `${ensName} (${address})` : address}

@@ -1,9 +1,29 @@
-export enum Contracts {
-  ContractRegistry = '0x64f5219563e28EeBAAd91Ca8D31fa3b36621FD4f',
-  TokenRegistry = '0x1757a98c1333B9dc8D408b194B2279b5AFDF70Cc',
-  Token = '0x6484EB0792c646A4827638Fc1B6F20461418eB00',
-  Locking = '0xf201fFeA8447AB3d43c98Da3349e0749813C9009',
-  Staking = '0xA75E74a5109Ed8221070142D15cEBfFe9642F489'
+import { ContractRegistryABI, LockingABI, StakingABI, TokenABI } from '@abis'
+
+enum ContractAddresses {
+  Token = '0xa513E6E4b8f2a923D98304ec87F64353C4D5C853',
+  Locking = '0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6',
+  Staking = '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318',
+  ContractRegistry = '0x610178dA211FEF7D417bC0e6FeD39F05609AD788'
 }
 
-export default Contracts
+export const ContractsInfo = {
+  Token: {
+    abi: TokenABI,
+    address: ContractAddresses.Token
+  },
+  Locking: {
+    abi: LockingABI,
+    address: ContractAddresses.Locking
+  },
+  Staking: {
+    abi: StakingABI,
+    address: ContractAddresses.Staking
+  },
+  ContractRegistry: {
+    abi: ContractRegistryABI,
+    address: ContractAddresses.ContractRegistry
+  }
+}
+
+export default ContractsInfo

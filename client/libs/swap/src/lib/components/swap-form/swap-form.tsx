@@ -101,7 +101,11 @@ function SwapForm() {
             </Stack>
             {networkFee && <TransactionDetails items={transactionDetails} />}
             {error && <TransactionAlert color='red' message={error.message} />}
-            <Button size='large' onClick={handleSubmit} disabled={!currencyInAmount || !lockTime}>
+            <Button
+              size='large'
+              onClick={handleSubmit}
+              disabled={!currencyInAmount || !lockTime}
+            >
               Swap
             </Button>
           </Stack>

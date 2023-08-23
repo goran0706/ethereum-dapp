@@ -1,4 +1,4 @@
-export default [
+export const StakingABI = [
   {
     inputs: [
       {
@@ -240,6 +240,54 @@ export default [
     inputs: [
       {
         internalType: 'address',
+        name: 'tokenIn',
+        type: 'address'
+      },
+      {
+        internalType: 'address',
+        name: 'tokenOut',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: 'amountIn',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'amountOut',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8'
+      },
+      {
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32'
+      },
+      {
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32'
+      }
+    ],
+    name: 'addLiquidityAndStakeWithPermit',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'token',
         type: 'address'
       }
@@ -251,10 +299,10 @@ export default [
   },
   {
     inputs: [],
-    name: 'factory',
+    name: 'cRegistry',
     outputs: [
       {
-        internalType: 'contract IUniswapV2Factory',
+        internalType: 'contract ContractRegistry',
         name: '',
         type: 'address'
       }
@@ -263,19 +311,26 @@ export default [
     type: 'function'
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'token',
-        type: 'address'
-      }
-    ],
-    name: 'getAPR',
+    inputs: [],
+    name: 'exitFeePercentage',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
         type: 'uint256'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'factory',
+    outputs: [
+      {
+        internalType: 'contract IUniswapV2Factory',
+        name: '',
+        type: 'address'
       }
     ],
     stateMutability: 'view',
@@ -305,19 +360,6 @@ export default [
       }
     ],
     stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address[]',
-        name: 'tokens',
-        type: 'address[]'
-      }
-    ],
-    name: 'importTokens',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -374,6 +416,19 @@ export default [
       }
     ],
     stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address[]',
+        name: 'tokens',
+        type: 'address[]'
+      }
+    ],
+    name: 'registerTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function'
   },
   {
@@ -459,6 +514,19 @@ export default [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: '_exitFee',
+        type: 'uint256'
+      }
+    ],
+    name: 'setExitFee',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
         internalType: 'address',
         name: 'token',
         type: 'address'
@@ -470,6 +538,44 @@ export default [
       }
     ],
     name: 'stake',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'token',
+        type: 'address'
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint256',
+        name: 'deadline',
+        type: 'uint256'
+      },
+      {
+        internalType: 'uint8',
+        name: 'v',
+        type: 'uint8'
+      },
+      {
+        internalType: 'bytes32',
+        name: 'r',
+        type: 'bytes32'
+      },
+      {
+        internalType: 'bytes32',
+        name: 's',
+        type: 'bytes32'
+      }
+    ],
+    name: 'stakeWithPermit',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
@@ -492,35 +598,6 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
-    ],
-    stateMutability: 'view',
-    type: 'function'
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address'
-      }
-    ],
-    name: 'tokenAPR',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'totalStaked',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'totalRewards',
-        type: 'uint256'
-      },
-      {
-        internalType: 'uint256',
-        name: 'annualAPR',
         type: 'uint256'
       }
     ],
@@ -615,4 +692,6 @@ export default [
     stateMutability: 'nonpayable',
     type: 'function'
   }
-]
+] as const
+
+export default StakingABI

@@ -66,8 +66,8 @@ const LimitOrderForm: React.FC = () => {
     setCurrencyOutAmount(value)
   }
 
-  const handleLimitPriceChange = (e: ChangeEvent) => {
-    const { value } = e.target as HTMLInputElement
+  const handleLimitPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
     setLimitPrice(value)
   }
 
@@ -141,7 +141,11 @@ const LimitOrderForm: React.FC = () => {
             </Stack>
             {networkFee && <TransactionDetails items={transactionDetails} />}
             {error && <TransactionAlert color='red' message={error.message} />}
-            <Button size='large' onClick={handleSubmit} disabled={!currencyInAmount}>
+            <Button
+              size='large'
+              onClick={handleSubmit}
+              disabled={!currencyInAmount}
+            >
               Create Limit Order
             </Button>
           </Stack>

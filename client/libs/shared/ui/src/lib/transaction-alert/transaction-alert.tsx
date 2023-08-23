@@ -9,7 +9,13 @@ const StyledAlert = styled(Stack)`
   padding: 1.2rem;
 `
 
-export const TransactionAlert = ({ color, message }: { color: string; message: string }) => {
+export const TransactionAlert = ({
+  color,
+  message
+}: {
+  color: string
+  message: string
+}) => {
   return (
     <StyledAlert color={color}>
       <Text fontSize='lg' color='brand'>

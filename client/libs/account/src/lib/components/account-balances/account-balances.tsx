@@ -1,59 +1,36 @@
-import { Contracts } from '@shared/constants'
+import { ContractsInfo } from '@shared/constants'
 import { useCurrencyMask } from '@shared/store'
 import { Grid, Heading, Stack, Stat } from '@shared/ui'
 import { GiTwoCoins } from 'react-icons/gi'
-import { useBalance } from 'wagmi'
+import { useToken } from 'wagmi'
 
-export const AccountBalances = () => {
+import useAccountBalances from './use-account-balances/use-account-balances'
+
+const AccountBalances = () => {
+  const balances = useAccountBalances()
   const { isCurrencyMasked } = useCurrencyMask()
+  const { data } = useToken({ address: ContractsInfo.Token.address })
 
-  const { data, isError, isLoading } = useBalance({
-    address: Contracts.Token,
-    token: Contracts.Token
-  })
-
-  const balances = [
-    {
-      label: 'Balance',
-      value: Number(data?.formatted),
-      symbol: data?.symbol,
-      color: 'crimson'
-    },
-    {
-      label: 'Locked',
-      value: Number(data?.formatted),
-      symbol: data?.symbol,
-      color: 'blue'
-    },
-    {
-      label: 'Staked',
-      value: Number(data?.formatted),
-      symbol: data?.symbol,
-      color: 'green'
-    },
-    {
-      label: 'Net worth',
-      value: Number(data?.formatted),
-      symbol: data?.symbol,
-      color: 'gold'
-    }
-  ]
+  const renderBalanceStat = (label: string, value: number, color: string) => (
+    <Stat
+      label={label}
+      value={value}
+      symbol={data?.symbol}
+      color={color}
+      Icon={GiTwoCoins}
+      isCurrencyMasked={isCurrencyMasked}
+      isAnimated={true}
+    />
+  )
 
   return (
     <Stack>
       <Heading as='h2'>Balances</Heading>
       <Grid $minItemWidth='260px' gutter='xl'>
-        {balances.map(balance => (
-          <Stat
-            key={balance.label}
-            label={balance.label}
-            value={balance.value}
-            symbol={balance.symbol}
-            color={balance.color}
-            Icon={GiTwoCoins}
-            isCurrencyMasked={isCurrencyMasked}
-          />
-        ))}
+        {renderBalanceStat('Wallet', balances.lmxBalance, 'crimson')}
+        {renderBalanceStat('Locked', balances.lmxLockedBalance, 'blue')}
+        {renderBalanceStat('Staked', balances.lmxStakedBalance, 'green')}
+        {renderBalanceStat('Net worth', balances.netWorth, 'gold')}
       </Grid>
     </Stack>
   )

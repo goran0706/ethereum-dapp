@@ -14,7 +14,7 @@ export function ConnectButton() {
           <Button onClick={show}>
             {isConnected ? (
               isCurrencyMasked ? (
-                <Mask height='15px' width='89rem' />
+                <Mask height='15px' width='89.5rem' />
               ) : (
                 ensName ?? truncatedAddress
               )

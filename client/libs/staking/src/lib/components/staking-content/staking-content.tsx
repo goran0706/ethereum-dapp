@@ -89,7 +89,7 @@ function StakingContent() {
           render={reason => (
             <Flex as='li' key={reason.id}>
               <Circle size='3.2rem'>{reason.id}</Circle>
-              <Flex direction='column' gutter='sm'>
+              <Flex flexDirection='column' gutter='sm'>
                 <Text fontSize='lg' fontWeight='bold'>
                   {reason.title}
                 </Text>
@@ -113,7 +113,7 @@ function StakingContent() {
           render={step => (
             <Flex as='li' key={step.id}>
               <Circle size='3.2rem'>{step.id}</Circle>
-              <Flex direction='column' gutter='sm'>
+              <Flex flexDirection='column' gutter='sm'>
                 <Text fontSize='lg' fontWeight='bold'>
                   {step.title}
                 </Text>

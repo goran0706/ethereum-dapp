@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export interface CheckboxProps {
   checked: boolean
-  disabled: boolean
+  disabled?: boolean
   id: string
   children: ReactNode
   onChange: () => void
@@ -29,7 +29,13 @@ const StyledCheckbox = styled.label`
   }
 `
 
-export function Checkbox({ checked, onChange, disabled = false, id, children }: CheckboxProps) {
+export function Checkbox({
+  checked,
+  onChange,
+  disabled = false,
+  id,
+  children
+}: CheckboxProps) {
   return (
     <StyledCheckbox>
       <input

@@ -6,7 +6,7 @@ import AccountDetails from './components/account-details/account-details'
 
 export const Account = () => {
   return (
-    <Stack gutter='xxl'>
+    <Stack gutter='2xxl'>
       <AccountDetails />
       <AccountBalances />
       <AccountActivity />

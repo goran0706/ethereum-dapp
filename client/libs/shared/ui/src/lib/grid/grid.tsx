@@ -2,7 +2,7 @@ import { spacings } from '@shared/constants'
 import styled from 'styled-components'
 
 export interface GridProps {
-  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '2xxl'
   $minItemWidth?: string
 }
 

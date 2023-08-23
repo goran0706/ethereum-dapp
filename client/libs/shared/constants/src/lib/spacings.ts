@@ -4,5 +4,6 @@ export const spacings = {
   md: '0.5rem',
   lg: '1rem',
   xl: '2rem',
-  xxl: '4rem'
+  xxl: '4rem',
+  '2xxl': '8rem'
 }

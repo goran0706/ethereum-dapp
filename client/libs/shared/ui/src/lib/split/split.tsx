@@ -2,7 +2,7 @@ import { fractions, spacings } from '@shared/constants'
 import styled from 'styled-components'
 
 export interface SplitProps {
-  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '2xxl'
   fraction?: '1/4' | '1/3' | '1/2' | '2/3' | '3/4'
 }
 

@@ -18,7 +18,8 @@ export function Calculator() {
 
   const calculateYield = (e: FormEvent) => {
     e.preventDefault()
-    const yieldAmount = (parseFloat(tokenAmount) * parseFloat(yieldPercentage)) / 100
+    const yieldAmount =
+      (parseFloat(tokenAmount) * parseFloat(yieldPercentage)) / 100
     setCalculatedYield(yieldAmount.toFixed(2))
   }
 

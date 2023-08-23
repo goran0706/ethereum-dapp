@@ -1,12 +1,11 @@
-import { Blur, Blurdark } from '@shared/assets'
 import { commafy } from '@utils'
 import { lighten } from 'polished'
 import { useCallback, useEffect, useState } from 'react'
 import { IconType } from 'react-icons'
 import styled from 'styled-components'
-import { useDarkMode } from 'usehooks-ts'
 
 import Flex from '../flex/flex'
+import Mask from '../mask/mask'
 import Stack from '../stack/stack'
 import Text from '../text/text'
 
@@ -44,7 +43,6 @@ export interface StatProps {
   isAnimated?: boolean
 }
 
-// Todo: fix colorMode and commafy
 export function Stat({
   label,
   value,
@@ -55,12 +53,9 @@ export function Stat({
   isAnimated
 }: StatProps) {
   const [animatedValue, setAnimatedValue] = useState(isAnimated ? 0 : value)
-  const { isDarkMode } = useDarkMode()
-  const mask = isDarkMode ? Blurdark : Blur
 
   const updateValue = useCallback(() => {
     setAnimatedValue(prevAnimatedValue => {
-      if (prevAnimatedValue >= value) return prevAnimatedValue
       const diff = value - prevAnimatedValue
       const increment = Math.ceil(diff / 15) // 60 frames per second
       const newAnimatedValue = prevAnimatedValue + increment
@@ -69,14 +64,11 @@ export function Stat({
   }, [value])
 
   useEffect(() => {
-    let animationId: number
-    const animate = () => {
-      updateValue()
-      animationId = requestAnimationFrame(animate)
+    if (isAnimated && animatedValue < value) {
+      const animationId = requestAnimationFrame(updateValue)
+      return () => cancelAnimationFrame(animationId)
     }
-    animate()
-    return () => cancelAnimationFrame(animationId)
-  }, [updateValue])
+  }, [isAnimated, animatedValue, updateValue, value])
 
   return (
     <StyledStat color={color}>
@@ -86,18 +78,13 @@ export function Stat({
         </StyledIcon>
       )}
       <Stack gutter='xs'>
-        <Flex>
+        {isCurrencyMasked ? (
+          <Mask height='24px' width='200px' />
+        ) : (
           <Text fontSize='lg' fontWeight='bolder'>
-            {isCurrencyMasked ? (
-              <img src={mask} height={16} alt='******' />
-            ) : (
-              commafy(animatedValue)
-            )}
+            {`${commafy(animatedValue)} ${symbol}`}
           </Text>
-          <Text fontSize='lg' fontWeight='bolder'>
-            {isCurrencyMasked ? <img src={mask} height={16} alt='******' /> : symbol}
-          </Text>
-        </Flex>
+        )}
         <Text fontSize='lg' fontWeight='bold'>
           {label}
         </Text>

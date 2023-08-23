@@ -1,4 +1,6 @@
-import { useCurrencyForm } from '@shared/hooks'
+import { CLEAR_ALERT_DELAY, ContractsInfo } from '@shared/constants'
+import { useCurrencyForm, usePermit } from '@shared/hooks'
+import { useCurrencySelect } from '@shared/store'
 import {
   AnchorInternal,
   Button,
@@ -7,68 +9,101 @@ import {
   Form,
   Panel,
   PeriodSelect,
+  PermitSwitch,
   Stack,
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { ChangeEvent, FormEvent } from 'react'
+import { useEffect } from 'react'
+import { parseEther } from 'viem'
+import { useAccount, useContractWrite, useFeeData } from 'wagmi'
 
 export function StakeForm() {
+  const { currencyIn, setCurrencyIn } = useCurrencySelect()
   const {
-    lockTime,
-    setLockTime,
-    resetLockTime,
-    currencyIn,
-    setCurrencyIn,
+    balance,
     currencyInAmount,
-    setCurrencyInAmount,
-    error
+    decrementBalance,
+    errorMessage,
+    isPermitOn,
+    lockTime,
+    handleCurrencyInAmountChange,
+    handleBalancePercentageClick,
+    handleTogglePermit,
+    handleLockTimeChange,
+    handleResetLockTime,
+    handleError,
+    handleErrorClear,
+    handleSubmit
   } = useCurrencyForm()
 
-  // TODO
-  const networkFee = 4.23
-  const fiatAmount = 1800
-  const balanceAmount = 100
-  const balanceLabel = 'Balance'
+  const { isConnected, address: beneficiary } = useAccount()
+  const token = ContractsInfo.Token.address
+  const spender = ContractsInfo.Staking.address
+  const value = parseEther(currencyInAmount.toString())
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600)
+  const { generateSignature } = usePermit(token, spender, value, deadline)
 
-  const transactionDetails = [{ label: 'Network Fee', value: `~${networkFee}` }]
+  const { data: feeData } = useFeeData()
+  const networkFee = feeData?.formatted.gasPrice
+  const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
 
-  const handleCurrencyInAmountChange = (e: ChangeEvent) => {
-    const { value } = e.target as HTMLInputElement
-    setCurrencyInAmount(value)
-  }
+  const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
-  const handleLockTimeChange = (e: ChangeEvent) => {
-    const { value } = e.target as HTMLInputElement
-    setLockTime(parseInt(value))
-  }
+  const { writeAsync: approve, isLoading: isLoadingApprove } = useContractWrite(
+    { ...ContractsInfo.Token, functionName: 'approve' }
+  )
 
-  const handleResetLockTime = () => {
-    resetLockTime()
-  }
+  const { writeAsync: stake, isLoading: isLoadingStake } = useContractWrite({
+    ...ContractsInfo.Staking,
+    functionName: 'stake'
+  })
 
-  const handlePercentageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    const button = e.currentTarget as HTMLButtonElement
-    const percentStr = button.getAttribute('data-percent')
-    if (percentStr !== null) {
-      const percent = parseFloat(percentStr)
-      const result = (percent / balanceAmount) * 100
-      setCurrencyInAmount(result.toString())
+  const { writeAsync: stakeWithPermit, isLoading: isLoadingPermit } =
+    useContractWrite({
+      ...ContractsInfo.Staking,
+      functionName: 'stakeWithPermit'
+    })
+
+  useEffect(() => {
+    const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
+    return () => clearTimeout(id)
+  }, [errorMessage, handleErrorClear])
+
+  const handleStake = async (): Promise<void> => {
+    try {
+      await approve({ args: [spender, value] })
+      await stake({ args: [token, value] })
+      decrementBalance(value)
+    } catch (err) {
+      handleError(err)
     }
   }
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    alert(`Stake ${currencyInAmount} ${currencyIn.symbol} for ${lockTime} months`)
+  const handleStakeWithPermit = async () => {
+    try {
+      const signature = await generateSignature()
+      if (signature) {
+        const { v, r, s } = signature
+        await stakeWithPermit({
+          args: [token, value, deadline, Number(v), r, s]
+        })
+        decrementBalance(value)
+      }
+    } catch (err) {
+      handleError(err)
+    }
   }
 
   return (
     <Panel width='480px' height='fit-content'>
       <Stack>
-        <Flex>
-          <AnchorInternal to='/staking/stake'>Stake</AnchorInternal>
-          <AnchorInternal to='/staking/unstake'>Unstake</AnchorInternal>
+        <Flex justifyContent='space-between' alignItems='center'>
+          <Flex>
+            <AnchorInternal to='/staking/stake'>Stake</AnchorInternal>
+            <AnchorInternal to='/staking/unstake'>Unstake</AnchorInternal>
+          </Flex>
+          <PermitSwitch isOn={isPermitOn} onToggle={handleTogglePermit} />
         </Flex>
         <Form>
           <Stack>
@@ -78,22 +113,36 @@ export function StakeForm() {
               currencyAmount={currencyInAmount}
               onCurrencyAmountChange={handleCurrencyInAmountChange}
               fiatAmount={fiatAmount}
-              balanceAmount={balanceAmount}
-              balanceLabel={balanceLabel}
+              balanceLabel='Balance'
+              balanceAmount={balance}
               renderNativeToken
               renderCurrencyBalance
               renderPercentageButtons
-              onPercentageClick={handlePercentageClick}
+              onPercentageClick={handleBalancePercentageClick}
             />
             <PeriodSelect
               value={lockTime}
               onChange={handleLockTimeChange}
               onReset={handleResetLockTime}
             />
-            {networkFee && <TransactionDetails items={transactionDetails} />}
-            {error && <TransactionAlert color='red' message={error?.message} />}
-            <Button size='large' onClick={handleSubmit} disabled={!currencyInAmount || !lockTime}>
-              Stake
+            {txDetails && <TransactionDetails items={txDetails} />}
+            {errorMessage && (
+              <TransactionAlert color='red' message={errorMessage} />
+            )}
+            <Button
+              size='large'
+              type='submit'
+              isLoading={isLoadingPermit || isLoadingApprove || isLoadingStake}
+              disabled={
+                !beneficiary ||
+                !currencyInAmount ||
+                !isConnected ||
+                lockTime === null ||
+                lockTime === undefined
+              }
+              onClick={isPermitOn ? handleStakeWithPermit : handleStake}
+            >
+              {isPermitOn ? 'Permit & Stake' : 'Approve & Stake'}
             </Button>
           </Stack>
         </Form>

@@ -59,7 +59,7 @@ function renderChecklistItem(item: ChecklistItem) {
   return (
     <Flex as='li' key={item.id}>
       <Circle size='3.2rem'>{item.id}</Circle>
-      <Flex direction='column' gutter='sm'>
+      <Flex flexDirection='column' gutter='sm'>
         <Text fontSize='lg' fontWeight='bold'>
           {item.title}
         </Text>

@@ -1,4 +1,5 @@
 import { Token } from '@shared/models'
+import { commafy } from '@utils'
 import { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
@@ -12,18 +13,18 @@ import Stack from '../stack/stack'
 import Text from '../text/text'
 
 export interface CurrencyInputPanelProps {
+  balanceAmount: bigint
+  balanceLabel: string
   currency: Token
-  onCurrencyChange: (token: Token) => void
-  currencyAmount: number | string
-  onCurrencyAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
-  fiatAmount?: number
-  balanceAmount?: number
-  balanceLabel?: string
+  currencyAmount: string
+  fiatAmount: bigint
   readOnly?: boolean
-  renderNativeToken?: boolean
   renderCurrencyBalance?: boolean
   renderCurrencySelector?: boolean
+  renderNativeToken?: boolean
   renderPercentageButtons?: boolean
+  onCurrencyChange: (token: Token) => void
+  onCurrencyAmountChange: (e: ChangeEvent<HTMLInputElement>) => void
   onPercentageClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
@@ -94,8 +95,8 @@ export function CurrencyInputPanel({
   currencyAmount,
   onCurrencyAmountChange,
   fiatAmount,
-  balanceAmount,
   balanceLabel,
+  balanceAmount,
   readOnly,
   renderNativeToken,
   renderCurrencyBalance,
@@ -118,12 +119,15 @@ export function CurrencyInputPanel({
           readOnly={readOnly}
           spellCheck='false'
           tabIndex={0}
-          type='number' // Use type="number" for numeric input
+          type='number'
           value={currencyAmount}
           onChange={onCurrencyAmountChange}
         />
         {renderCurrencySelector && (
-          <CurrencySelect currency={currency} onCurrencySelect={onCurrencyChange} />
+          <CurrencySelect
+            currency={currency}
+            onCurrencySelect={onCurrencyChange}
+          />
         )}
         {renderNativeToken && (
           <TokenWrapper>
@@ -135,8 +139,10 @@ export function CurrencyInputPanel({
       {renderCurrencyBalance && (
         <Row fraction='1/2'>
           <FiatAmountText align='left'>{`~$${fiatAmount}`}</FiatAmountText>
-          {balanceAmount !== undefined && balanceLabel && (
-            <BalanceAmountText align='right'>{`${balanceLabel}: ${balanceAmount}`}</BalanceAmountText>
+          {balanceLabel && (
+            <BalanceAmountText align='right'>{`${balanceLabel}: ${commafy(
+              balanceAmount
+            )}`}</BalanceAmountText>
           )}
         </Row>
       )}
@@ -146,6 +152,7 @@ export function CurrencyInputPanel({
             <PercentageButton
               key={percent}
               type='button'
+              variation='secondary'
               data-percent={percent}
               onClick={onPercentageClick}
             >

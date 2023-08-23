@@ -17,7 +17,7 @@ contract TokenRegistry is Ownable {
      * @dev Imports tokens to the registry.
      * @param tokens The addresses of the tokens to be imported.
      */
-    function importTokens(address[] memory tokens) public onlyOwner {
+    function registerTokens(address[] memory tokens) public onlyOwner {
         for (uint256 i = 0; i < tokens.length; i++) {
             addToken(tokens[i]);
             emit TokenAdded(tokens[i]);

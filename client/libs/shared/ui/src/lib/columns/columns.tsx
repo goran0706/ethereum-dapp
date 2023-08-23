@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export interface ColumnsProps {
   columns?: string
-  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+  gutter?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl' | '2xxl'
 }
 
 export const Columns = styled.div<ColumnsProps>`

@@ -21,8 +21,8 @@ const StyledTable = styled.ul`
 const StyledHeader = styled.li<{ columns: string }>`
   display: grid;
   grid-template-columns: ${props => props.columns};
-  background-color: var(--color-black-50);
-  border-bottom: 1px solid var(--color-black-300);
+  background-color: var(--color-black-300);
+  // border-bottom: 1px solid var(--color-black-300);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   color: var(--color-black-800);
@@ -31,6 +31,8 @@ const StyledHeader = styled.li<{ columns: string }>`
   letter-spacing: 0.4rem;
   padding: 1.2rem 2.4rem;
   text-transform: uppercase;
+  min-height: 6rem;
+  align-items: center;
 
   p {
     color: var(--color-black-800);
@@ -48,6 +50,7 @@ const StyledHeader = styled.li<{ columns: string }>`
   @media ${device.md} {
     grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
     gap: 1rem;
+    justify-items: center;
   }
 `
 
@@ -75,6 +78,7 @@ const StyledRow = styled.li<{ columns: string }>`
   @media ${device.md} {
     grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
     gap: 1rem;
+    justify-items: center;
   }
 `
 
