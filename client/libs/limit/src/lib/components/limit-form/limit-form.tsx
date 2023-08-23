@@ -41,7 +41,7 @@ const LimitOrderForm: React.FC = () => {
   const { data: feeData } = useFeeData()
   const networkFee = feeData?.formatted.gasPrice
   const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
-  const rate = BigInt(1.8)
+  const rate = BigInt(1)
 
   const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
