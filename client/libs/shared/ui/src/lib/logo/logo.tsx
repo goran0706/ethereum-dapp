@@ -5,7 +5,7 @@ export function Logo() {
   return (
     <Center $centerText $centerChildren>
       <Heading as='h1' color='black'>
-        Logo
+        LuminaX
       </Heading>
     </Center>
   )
