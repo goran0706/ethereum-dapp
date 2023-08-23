@@ -1,4 +1,6 @@
+import { CLEAR_ALERT_DELAY } from '@shared/constants'
 import { useCurrencyForm } from '@shared/hooks'
+import { useCurrencySelect } from '@shared/store'
 import {
   Button,
   CurrencyInputPanel,
@@ -9,96 +11,44 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { useEffect } from 'react'
+import { useAccount, useFeeData } from 'wagmi'
 
 import TargetPriceInputPanel from '../target-price-input-panel/target-price-input-panel'
 
 const LimitOrderForm: React.FC = () => {
+  const { currencyIn, setCurrencyIn, currencyOut, setCurrencyOut } =
+    useCurrencySelect()
   const {
-    currencyIn,
-    setCurrencyIn,
-    currencyOut,
-    setCurrencyOut,
+    balance,
     currencyInAmount,
-    setCurrencyInAmount,
     currencyOutAmount,
-    setCurrencyOutAmount,
+    errorMessage,
+    isPermitOn,
     limitPrice,
-    setLimitPrice,
-    route,
-    error
+    lockTime,
+    handleBalancePercentageClick,
+    handleCurrencyInAmountChange,
+    handleCurrencyOutAmountChange,
+    handleCurrencySwap,
+    handleErrorClear,
+    handleLimitPriceChange,
+    handleSetToMarketPriceClick
   } = useCurrencyForm()
 
-  const [networkFee] = useState(4.23)
-  const marketPrice = '1800'
-  const rate = 1.3
-  const fiatAmount = 1800
-  const balanceAmount = 100
-  const balanceLabel = 'Balance'
+  const { isConnected, address: beneficiary } = useAccount()
 
-  const transactionDetails = [
-    { label: 'Network Fee', value: `~${networkFee}` },
-    {
-      label: `Est. ${currencyIn.symbol} sell price`,
-      value: `${route?.estSellPrice ?? 0} ${currencyOut.symbol}`
-    },
-    {
-      label: `Est. ${currencyOut.symbol} buy price`,
-      value: `${route?.estBuyPrice ?? 0} ${currencyIn.symbol}`
-    },
-    {
-      label: `Min ${currencyIn.symbol} sell price`,
-      value: `${route?.minSellPrice ?? 0} ${currencyOut.symbol}`
-    },
-    {
-      label: `Min ${currencyOut.symbol} buy price`,
-      value: `${route?.minBuyPrice ?? 0} ${currencyIn.symbol}`
-    }
-  ]
+  const { data: feeData } = useFeeData()
+  const networkFee = feeData?.formatted.gasPrice
+  const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
+  const rate = BigInt(1.8)
 
-  const handleCurrencyInAmountChange = (e: ChangeEvent) => {
-    const { value } = e.target as HTMLInputElement
-    setCurrencyInAmount(value)
-  }
+  const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
-  const handleCurrencyOutAmountChange = (e: ChangeEvent) => {
-    const { value } = e.target as HTMLInputElement
-    setCurrencyOutAmount(value)
-  }
-
-  const handleLimitPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setLimitPrice(value)
-  }
-
-  const handleSetToMarketPrice = () => {
-    setLimitPrice(marketPrice)
-  }
-
-  const handlePercentageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    const button = e.currentTarget as HTMLButtonElement
-    const percentStr = button.getAttribute('data-percent')
-    if (percentStr !== null) {
-      const percent = parseFloat(percentStr)
-      const result = (percent / balanceAmount) * 100
-      setCurrencyInAmount(result.toString())
-    }
-  }
-
-  const handleCurrencySwap = () => {
-    setCurrencyIn(currencyOut)
-    setCurrencyInAmount(currencyOutAmount)
-    setCurrencyOut(currencyIn)
-    setCurrencyOutAmount(currencyInAmount)
-  }
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    alert(
-      `Created Limit Order ${currencyInAmount} ${currencyIn.symbol} for ${currencyOutAmount} ${currencyOut.symbol}`
-    )
-  }
+  useEffect(() => {
+    const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
+    return () => clearTimeout(id)
+  }, [errorMessage, handleErrorClear])
 
   return (
     <Panel width='480px' height='fit-content'>
@@ -112,12 +62,13 @@ const LimitOrderForm: React.FC = () => {
                 currencyAmount={currencyInAmount}
                 onCurrencyAmountChange={handleCurrencyInAmountChange}
                 fiatAmount={fiatAmount}
-                balanceAmount={balanceAmount}
-                balanceLabel={balanceLabel}
+                balanceLabel='Balance'
+                balanceAmount={balance}
+                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
                 renderPercentageButtons
-                onPercentageClick={handlePercentageClick}
+                onPercentageClick={handleBalancePercentageClick}
               />
               <CurrencySwapButton onClick={handleCurrencySwap} />
               <CurrencyInputPanel
@@ -126,25 +77,36 @@ const LimitOrderForm: React.FC = () => {
                 currencyAmount={currencyOutAmount}
                 onCurrencyAmountChange={handleCurrencyOutAmountChange}
                 fiatAmount={fiatAmount}
-                balanceAmount={balanceAmount}
-                balanceLabel={balanceLabel}
+                balanceLabel='Balance'
+                balanceAmount={balance}
+                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
               />
               <TargetPriceInputPanel
                 price={limitPrice}
                 onPriceChange={handleLimitPriceChange}
-                onSetToMarketPriceClick={handleSetToMarketPrice}
+                onSetToMarketPriceClick={handleSetToMarketPriceClick}
                 currencySymbol={currencyIn.symbol}
                 rate={rate}
               />
             </Stack>
-            {networkFee && <TransactionDetails items={transactionDetails} />}
-            {error && <TransactionAlert color='red' message={error.message} />}
+            {txDetails && <TransactionDetails items={txDetails} />}
+            {errorMessage && (
+              <TransactionAlert color='red' message={errorMessage} />
+            )}
             <Button
               size='large'
-              onClick={handleSubmit}
-              disabled={!currencyInAmount}
+              type='submit'
+              isLoading={false}
+              disabled={
+                !beneficiary ||
+                !currencyInAmount ||
+                !isConnected ||
+                lockTime === null ||
+                lockTime === undefined
+              }
+              onClick={() => alert('TEST')}
             >
               Create Limit Order
             </Button>

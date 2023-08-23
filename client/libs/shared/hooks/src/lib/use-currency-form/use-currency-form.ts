@@ -42,7 +42,7 @@ interface CurrencyFormProps {
   handleLockedPercentageClick: (e: MouseEvent<HTMLButtonElement>) => void
   handleLockTimeChange: (e: ChangeEvent<HTMLInputElement>) => void
   handleResetLockTime: () => void
-  handleSetToMarketPriceClick: (marketPrice: bigint) => void
+  handleSetToMarketPriceClick: (e: React.MouseEvent<HTMLButtonElement>) => void
   handleSubmit: (e: FormEvent, callback: () => void) => void
   handleTogglePermit: () => void
 }
@@ -236,8 +236,10 @@ export function useCurrencyForm(): CurrencyFormProps {
     updateState(ActionTypes.SET_CURRENCY_OUT_AMOUNT, currencyInAmount)
   }
 
-  const handleSetToMarketPriceClick = (marketPrice: bigint) => {
-    updateState(ActionTypes.SET_LIMIT_PRICE, marketPrice)
+  const handleSetToMarketPriceClick = () => {
+    // Todo: fetch actual token market price
+    const temp = BigInt(1800)
+    updateState(ActionTypes.SET_LIMIT_PRICE, temp)
   }
 
   const handleBalancePercentageClick = (

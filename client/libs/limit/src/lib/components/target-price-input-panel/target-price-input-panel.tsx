@@ -4,10 +4,10 @@ import styled from 'styled-components'
 
 export interface LimitPriceProps {
   price: string
-  onPriceChange: (e: ChangeEvent) => void
+  onPriceChange: (e: ChangeEvent<HTMLInputElement>) => void
   onSetToMarketPriceClick: (e: React.MouseEvent<HTMLButtonElement>) => void
   currencySymbol: string
-  rate: number
+  rate: bigint
 }
 
 const StyledLimitPrice = styled.div`

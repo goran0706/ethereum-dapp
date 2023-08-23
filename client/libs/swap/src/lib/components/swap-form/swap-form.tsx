@@ -1,4 +1,6 @@
+import { CLEAR_ALERT_DELAY } from '@shared/constants'
 import { useCurrencyForm } from '@shared/hooks'
+import { useCurrencySelect } from '@shared/store'
 import {
   Button,
   CurrencyInputPanel,
@@ -9,63 +11,35 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import React, { ChangeEvent, FormEvent } from 'react'
+import { useEffect } from 'react'
+import { useAccount, useFeeData } from 'wagmi'
 
-function SwapForm() {
+const SwapForm: React.FC = () => {
+  const { currencyIn, setCurrencyIn, currencyOut, setCurrencyOut } =
+    useCurrencySelect()
   const {
-    lockTime,
-    currencyIn,
-    setCurrencyIn,
-    currencyOut,
-    setCurrencyOut,
+    balance,
     currencyInAmount,
-    setCurrencyInAmount,
     currencyOutAmount,
-    setCurrencyOutAmount,
-    error
+    errorMessage,
+    lockTime,
+    handleBalancePercentageClick,
+    handleCurrencyInAmountChange,
+    handleCurrencyOutAmountChange,
+    handleCurrencySwap,
+    handleErrorClear
   } = useCurrencyForm()
 
-  const networkFee = 4.23
-  const fiatAmount = 1800
-  const balanceAmount = 100
-  const balanceLabel = 'Balance'
+  const { isConnected, address: beneficiary } = useAccount()
+  const { data: feeData } = useFeeData()
+  const networkFee = feeData?.formatted.gasPrice
+  const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
+  const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
-  const transactionDetails = [{ label: 'Network Fee', value: `~${networkFee}` }]
-
-  const handleCurrencyInAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setCurrencyInAmount(value)
-  }
-
-  const handleCurrencyOutAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    setCurrencyOutAmount(value)
-  }
-
-  const handlePercentageClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    const button = e.currentTarget as HTMLButtonElement
-    const percentStr = button.getAttribute('data-percent')
-    if (percentStr !== null) {
-      const percent = parseFloat(percentStr)
-      const result = (percent / balanceAmount) * 100
-      setCurrencyInAmount(result.toString())
-    }
-  }
-
-  const handleCurrencySwap = () => {
-    setCurrencyIn(currencyOut)
-    setCurrencyInAmount(currencyOutAmount)
-    setCurrencyOut(currencyIn)
-    setCurrencyOutAmount(currencyInAmount)
-  }
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
-    alert(
-      `Swap ${currencyInAmount} ${currencyIn.symbol} for ${currencyOutAmount} ${currencyOut.symbol}`
-    )
-  }
+  useEffect(() => {
+    const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
+    return () => clearTimeout(id)
+  }, [errorMessage, handleErrorClear])
 
   return (
     <Panel width='480px' height='fit-content'>
@@ -79,12 +53,13 @@ function SwapForm() {
                 currencyAmount={currencyInAmount}
                 onCurrencyAmountChange={handleCurrencyInAmountChange}
                 fiatAmount={fiatAmount}
-                balanceAmount={balanceAmount}
-                balanceLabel={balanceLabel}
+                balanceLabel='Balance'
+                balanceAmount={balance}
+                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
                 renderPercentageButtons
-                onPercentageClick={handlePercentageClick}
+                onPercentageClick={handleBalancePercentageClick}
               />
               <CurrencySwapButton onClick={handleCurrencySwap} />
               <CurrencyInputPanel
@@ -93,18 +68,29 @@ function SwapForm() {
                 currencyAmount={currencyOutAmount}
                 onCurrencyAmountChange={handleCurrencyOutAmountChange}
                 fiatAmount={fiatAmount}
-                balanceAmount={balanceAmount}
-                balanceLabel={balanceLabel}
+                balanceLabel='Balance'
+                balanceAmount={balance}
+                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
               />
             </Stack>
-            {networkFee && <TransactionDetails items={transactionDetails} />}
-            {error && <TransactionAlert color='red' message={error.message} />}
+            {txDetails && <TransactionDetails items={txDetails} />}
+            {errorMessage && (
+              <TransactionAlert color='red' message={errorMessage} />
+            )}
             <Button
               size='large'
-              onClick={handleSubmit}
-              disabled={!currencyInAmount || !lockTime}
+              type='submit'
+              isLoading={false}
+              disabled={
+                !beneficiary ||
+                !currencyInAmount ||
+                !isConnected ||
+                lockTime === null ||
+                lockTime === undefined
+              }
+              onClick={() => alert('TEST')}
             >
               Swap
             </Button>
