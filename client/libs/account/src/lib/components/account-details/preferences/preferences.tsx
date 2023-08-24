@@ -27,7 +27,12 @@ export const Preferences = () => {
       <IconButton onClick={toggle}>
         {isCurrencyMasked ? <AiFillEye /> : <AiFillEyeInvisible />}
       </IconButton>
-      <IconButton as='a' href={blockExplorerUrl} target='_blank' rel='noopener noreferrer'>
+      <IconButton
+        as='a'
+        href={blockExplorerUrl}
+        target='_blank'
+        rel='noopener noreferrer'
+      >
         <BiLinkExternal />
       </IconButton>
       <IconButton onClick={() => disconnect()}>

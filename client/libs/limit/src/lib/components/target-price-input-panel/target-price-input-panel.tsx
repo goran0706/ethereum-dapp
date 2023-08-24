@@ -1,13 +1,15 @@
-import { Input, Row, Text, TextButton } from '@shared/ui'
+import { Token } from '@shared/models'
+import { CurrencySelect, Input, Row, Text, TextButton } from '@shared/ui'
 import React, { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 export interface LimitPriceProps {
+  rate: bigint
   price: string
+  currency: Token
   onPriceChange: (e: ChangeEvent<HTMLInputElement>) => void
   onSetToMarketPriceClick: (e: React.MouseEvent<HTMLButtonElement>) => void
-  currencySymbol: string
-  rate: bigint
+  onCurrencyChange: (value: Token) => void
 }
 
 const StyledLimitPrice = styled.div`
@@ -31,11 +33,12 @@ const StyledLimitPrice = styled.div`
 `
 
 const TargetPriceInputPanel: React.FC<LimitPriceProps> = ({
+  rate,
   price,
+  currency,
   onPriceChange,
-  onSetToMarketPriceClick,
-  currencySymbol,
-  rate
+  onCurrencyChange,
+  onSetToMarketPriceClick
 }) => {
   return (
     <StyledLimitPrice>
@@ -63,9 +66,10 @@ const TargetPriceInputPanel: React.FC<LimitPriceProps> = ({
           value={price}
           onChange={onPriceChange}
         />
-        <Text fontSize='sm' fontWeight='bold' align='center'>
-          {currencySymbol}
-        </Text>
+        <CurrencySelect
+          currency={currency}
+          onCurrencySelect={onCurrencyChange}
+        />
       </Row>
     </StyledLimitPrice>
   )

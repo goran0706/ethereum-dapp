@@ -5,18 +5,6 @@ import { useEffect, useState } from 'react'
 import { formatEther, parseAbi } from 'viem'
 import { useAccount, useNetwork, usePublicClient } from 'wagmi'
 
-interface Log {
-  address: string
-  blockHash: string
-  blockNumber: bigint
-  data: string
-  logIndex: number
-  removed: boolean
-  topics: string[]
-  transactionHash: string
-  transactionIndex: number
-}
-
 export const AccountActivity = () => {
   const { address } = useAccount()
   const { chain } = useNetwork()
@@ -88,10 +76,9 @@ export const AccountActivity = () => {
           const tagColor = tx.args.from === address ? 'red' : 'green'
           const from = tx.args.from || tx.args.owner || tx.args.beneficiary
           const to = tx.args.to || tx.args.spender || tx.args.sender
-
-          const defaultBlockExplorer =
+          const blockExplorerLink =
             `${chain?.blockExplorers?.default.url}/tx/${tx.transactionHash}` ??
-            'https://etherscan.io/tx/'
+            `https://etherscan.io/tx/${tx.transactionHash}`
 
           return (
             <Table.Row key={index}>
@@ -102,7 +89,7 @@ export const AccountActivity = () => {
                 {formatEther(tx.args.value ?? tx.args.amount)} LMX
               </Tag>
               <Text>{shortenAddress(tx.transactionHash, 20)}</Text>
-              <TextButton as='a' href={defaultBlockExplorer} target='_blank'>
+              <TextButton as='a' href={blockExplorerLink} target='_blank'>
                 Details
               </TextButton>
             </Table.Row>

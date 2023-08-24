@@ -72,9 +72,10 @@ function StakingContent() {
           What is DApp Token Staking?
         </Heading>
         <Text fontSize='lg' color='dark' align='justify'>
-          DApp Token Staking is a revolutionary way to participate in and support our blockchain
-          network. By staking your DApp tokens, you actively contribute to the security and
-          functionality of the platform, all while earning attractive rewards for your commitment.
+          DApp Token Staking is a revolutionary way to participate in and
+          support our blockchain network. By staking your DApp tokens, you
+          actively contribute to the security and functionality of the platform,
+          all while earning attractive rewards for your commitment.
         </Text>
       </Stack>
       <Stack>
@@ -133,10 +134,11 @@ function StakingContent() {
           Security and Transparency
         </Heading>
         <Text fontSize='lg' color='dark' align='justify'>
-          Your security is our top priority. We have implemented robust security measures to
-          safeguard your staked tokens and ensure the integrity of the staking process. Furthermore,
-          our staking mechanisms are fully transparent, allowing you to track your rewards and
-          staking progress in real-time.
+          Your security is our top priority. We have implemented robust security
+          measures to safeguard your staked tokens and ensure the integrity of
+          the staking process. Furthermore, our staking mechanisms are fully
+          transparent, allowing you to track your rewards and staking progress
+          in real-time.
         </Text>
       </Stack>
       <Stack>
@@ -147,9 +149,9 @@ function StakingContent() {
           Get Started Today!
         </Heading>
         <Text fontSize='lg' color='dark' align='justify'>
-          DApp Token Staking provides an incredible opportunity to earn rewards while actively
-          supporting the blockchain network. Don't miss out on this chance to be part of the future
-          of decentralized technology.
+          DApp Token Staking provides an incredible opportunity to earn rewards
+          while actively supporting the blockchain network. Don't miss out on
+          this chance to be part of the future of decentralized technology.
         </Text>
         <Text fontSize='lg' color='dark' align='justify'>
           <strong>
@@ -158,9 +160,10 @@ function StakingContent() {
             </span>{' '}
             Disclaimer:
           </strong>{' '}
-          Staking involves financial risk and is not suitable for everyone. Please do your own
-          research and consider your risk tolerance before participating in staking. The information
-          provided on this page does not constitute financial advice.
+          Staking involves financial risk and is not suitable for everyone.
+          Please do your own research and consider your risk tolerance before
+          participating in staking. The information provided on this page does
+          not constitute financial advice.
         </Text>
       </Stack>
     </Stack>

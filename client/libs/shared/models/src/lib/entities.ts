@@ -1,8 +1,8 @@
-import { Address, TypedDataDomain, TypedDataParameter } from 'viem'
+import { Address, Hex, TypedDataDomain, TypedDataParameter } from 'viem'
 
 export interface Token {
   chainId: number
-  address: string
+  address: Hex
   name: string
   symbol: string
   decimals: number
@@ -17,7 +17,7 @@ export interface Token {
 }
 
 export interface ERC20 {
-  address: string
+  address: Hex
   name(): Promise<string>
   symbol(): Promise<string>
   decimals(): Promise<string>

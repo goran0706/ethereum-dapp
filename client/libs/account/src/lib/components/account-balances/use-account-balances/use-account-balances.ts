@@ -11,6 +11,13 @@ interface Balances {
 }
 
 const useAccountBalances = () => {
+  const [balances, setBalances] = useState<Balances>({
+    lmxBalance: 0,
+    lmxLockedBalance: 0,
+    lmxStakedBalance: 0,
+    netWorth: 0
+  })
+
   const { address } = useAccount()
   const { data: lmxBalances } = useContractReads({
     contracts: [
@@ -39,7 +46,6 @@ const useAccountBalances = () => {
         lmxBalances[1]?.result as { amount: bigint }
       )?.amount
       const lmxStakedBalanceBigint = lmxBalances[2]?.result as bigint
-
       const lmxBalance = Number(formatEther(lmxBalanceBigint))
       const lmxLockedBalance = Number(formatEther(lmxLockedBalanceBigint))
       const lmxStakedBalance = Number(formatEther(lmxStakedBalanceBigint))
@@ -53,13 +59,6 @@ const useAccountBalances = () => {
       })
     }
   }, [lmxBalances])
-
-  const [balances, setBalances] = useState<Balances>({
-    lmxBalance: 0,
-    lmxLockedBalance: 0,
-    lmxStakedBalance: 0,
-    netWorth: 0
-  })
 
   return balances
 }

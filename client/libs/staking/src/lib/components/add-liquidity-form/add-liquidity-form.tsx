@@ -17,11 +17,12 @@ import { useEffect } from 'react'
 import { parseEther } from 'viem'
 import { useAccount, useContractWrite, useFeeData } from 'wagmi'
 
-export function StakeForm() {
-  const { currencyIn, setCurrencyIn } = useCurrencySelect()
+export function AddAndStakeForm() {
+  const { currencyIn, setCurrencyIn, currencyOut } = useCurrencySelect()
   const {
     balance,
     currencyInAmount,
+    currencyOutAmount,
     decrementBalance,
     errorMessage,
     isPermitOn,
@@ -51,43 +52,35 @@ export function StakeForm() {
 
   const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
-  const { writeAsync: approve, isLoading: isLoadingApprove } = useContractWrite(
-    { ...ContractsInfo.Token, functionName: 'approve' }
-  )
-
-  const { writeAsync: stake, isLoading: isLoadingStake } = useContractWrite({
+  const {
+    writeAsync: addLiquidityAndStakeWithPermit,
+    isLoading: isLoadingPermit
+  } = useContractWrite({
     ...ContractsInfo.Staking,
-    functionName: 'stake'
+    functionName: 'addLiquidityAndStakeWithPermit'
   })
-
-  const { writeAsync: stakeWithPermit, isLoading: isLoadingPermit } =
-    useContractWrite({
-      ...ContractsInfo.Staking,
-      functionName: 'stakeWithPermit'
-    })
 
   useEffect(() => {
     const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
     return () => clearTimeout(id)
   }, [errorMessage, handleErrorClear])
 
-  const handleStake = async (): Promise<void> => {
-    try {
-      await approve({ args: [spender, value] })
-      await stake({ args: [token, value] })
-      decrementBalance(value)
-    } catch (err) {
-      handleError(err)
-    }
-  }
-
-  const handleStakeWithPermit = async () => {
+  const handleAddLiquidityAndStakeWithPermit = async () => {
     try {
       const signature = await generateSignature()
       if (signature) {
         const { v, r, s } = signature
-        await stakeWithPermit({
-          args: [token, value, deadline, Number(v), r, s]
+        await addLiquidityAndStakeWithPermit({
+          args: [
+            currencyIn.address,
+            currencyOut.address,
+            BigInt(currencyInAmount),
+            BigInt(currencyOutAmount),
+            deadline,
+            Number(v),
+            r,
+            s
+          ]
         })
         decrementBalance(value)
       }
@@ -130,7 +123,7 @@ export function StakeForm() {
             <Button
               size='large'
               type='submit'
-              isLoading={isLoadingPermit || isLoadingApprove || isLoadingStake}
+              isLoading={isLoadingPermit}
               disabled={
                 !beneficiary ||
                 !currencyInAmount ||
@@ -138,9 +131,15 @@ export function StakeForm() {
                 lockTime === null ||
                 lockTime === undefined
               }
-              onClick={isPermitOn ? handleStakeWithPermit : handleStake}
+              onClick={
+                isPermitOn
+                  ? handleAddLiquidityAndStakeWithPermit
+                  : handleAddLiquidityAndStakeWithPermit
+              }
             >
-              {isPermitOn ? 'Permit & Stake' : 'Approve & Stake'}
+              {isPermitOn
+                ? 'Add Liquidity with Permit & Stake'
+                : 'Add Liquidity & Stake'}
             </Button>
           </Stack>
         </Form>
@@ -149,4 +148,4 @@ export function StakeForm() {
   )
 }
 
-export default StakeForm
+export default AddAndStakeForm

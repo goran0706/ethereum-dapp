@@ -4,7 +4,7 @@ import {
   defaultPeriodSelection
 } from '@shared/constants'
 import { Token } from '@shared/models'
-import { useCurrencySelect } from '@shared/store'
+import { useCurrencySelect, usePermit } from '@shared/store'
 import { formatError } from '@utils'
 import {
   ChangeEvent,
@@ -52,7 +52,6 @@ type State = {
   currencyInAmount: string
   currencyOutAmount: string
   errorMessage: string
-  isPermitOn: boolean
   limitPrice: string
   staked: bigint
   locked: bigint
@@ -104,7 +103,6 @@ const initialState: State = {
   currencyInAmount: '',
   currencyOutAmount: '',
   errorMessage: '',
-  isPermitOn: false,
   limitPrice: '',
   staked: BigInt(0),
   locked: BigInt(0),
@@ -131,8 +129,6 @@ function reducer(state: State, action: Action): State {
       return { ...state, errorMessage: action.payload }
     case 'CLEAR_ERROR_MESSAGE':
       return { ...state, errorMessage: '' }
-    case 'TOGGLE_PERMIT':
-      return { ...state, isPermitOn: action.payload }
     default:
       return state
   }
@@ -145,7 +141,6 @@ export function useCurrencyForm(): CurrencyFormProps {
     currencyInAmount,
     currencyOutAmount,
     errorMessage,
-    isPermitOn,
     limitPrice,
     staked,
     locked,
@@ -153,6 +148,7 @@ export function useCurrencyForm(): CurrencyFormProps {
   } = state
 
   const { address } = useAccount()
+  const { isPermitOn, toggle } = usePermit()
   const { currencyIn, setCurrencyIn, currencyOut, setCurrencyOut } =
     useCurrencySelect()
 
@@ -198,7 +194,7 @@ export function useCurrencyForm(): CurrencyFormProps {
   }
 
   const handleTogglePermit = () => {
-    updateState(ActionTypes.TOGGLE_PERMIT, !isPermitOn)
+    toggle()
   }
 
   const incrementBalance = (value: bigint) => {

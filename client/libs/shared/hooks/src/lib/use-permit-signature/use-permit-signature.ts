@@ -3,7 +3,7 @@ import { PermitConfig } from '@shared/models'
 import { Address, Signature, hexToSignature, zeroAddress } from 'viem'
 import { useContractRead, useNetwork, useToken, useWalletClient } from 'wagmi'
 
-export function usePermit(
+export function usePermitSignature(
   token: Address,
   spender: Address,
   value: bigint,
@@ -69,4 +69,4 @@ export function usePermit(
   return { generateSignature }
 }
 
-export default usePermit
+export default usePermitSignature

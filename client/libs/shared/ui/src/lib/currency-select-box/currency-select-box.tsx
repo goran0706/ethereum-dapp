@@ -1,11 +1,13 @@
 import { tokensUrl } from '@shared/constants'
 import { Token } from '@shared/models'
 import { ChangeEvent, Fragment, useState } from 'react'
+import { FaSearch } from 'react-icons/fa'
 import { HiChevronDown, HiChevronUp } from 'react-icons/hi'
 import styled from 'styled-components'
 import { useBoolean, useFetch } from 'usehooks-ts'
 
 import Flex from '../flex/flex'
+import IconButton from '../icon-button/icon-button'
 import Input from '../input/input'
 import Stack from '../stack/stack'
 import Text from '../text/text'
@@ -67,7 +69,18 @@ const CurrencyOption = styled(Flex)`
   }
 `
 
-const FilterInput = styled(Input)`
+const Search = styled(Flex)`
+  position: relative;
+`
+
+const SearchIcon = styled(IconButton)`
+  position: absolute;
+  top: 0.6rem;
+  right: 1rem;
+`
+
+const SearchInput = styled(Input)`
+  width: 100%;
   margin-bottom: 0.4rem; /* Add some spacing */
 `
 
@@ -85,7 +98,9 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
   const [filter, setFilter] = useState('')
 
   const filteredTokens =
-    data?.tokens.filter(token => token.name.toLowerCase().includes(filter.toLowerCase())) ?? []
+    data?.tokens.filter(token =>
+      token.name.toLowerCase().includes(filter.toLowerCase())
+    ) ?? []
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
@@ -112,10 +127,21 @@ export const CurrencySelect: React.FC<CurrencySelectProps> = ({
           Select a token
         </Text>
       )}
-      <CurrencySelectArrow>{open ? <HiChevronUp /> : <HiChevronDown />}</CurrencySelectArrow>
+      <CurrencySelectArrow>
+        {open ? <HiChevronUp /> : <HiChevronDown />}
+      </CurrencySelectArrow>
       {open && (
         <CurrencyOptions>
-          <FilterInput value={filter} onChange={handleFilterChange} onClick={handleFilterClick} />
+          <Search>
+            <SearchIcon>
+              <FaSearch />
+            </SearchIcon>
+            <SearchInput
+              value={filter}
+              onChange={handleFilterChange}
+              onClick={handleFilterClick}
+            />
+          </Search>
           {filteredTokens.map((option: Token, i) => (
             <CurrencyOption key={i} onClick={() => onSelectToken(option)}>
               <CurrencyIcon src={option.logoURI} />

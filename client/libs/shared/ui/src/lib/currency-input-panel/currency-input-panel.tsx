@@ -85,9 +85,7 @@ const BalanceAmountText = styled(Text)`
   text-align: right;
 `
 
-const PercentageButton = styled(Button)`
-  /* Add your CSS styles for the percentage buttons here */
-`
+const PercentageButton = styled(Button)``
 
 export function CurrencyInputPanel({
   currency,

@@ -46,7 +46,7 @@ const SwapForm: React.FC = () => {
       <Stack>
         <Form>
           <Stack>
-            <Stack gutter='md'>
+            <Stack gutter='sm'>
               <CurrencyInputPanel
                 currency={currencyIn}
                 onCurrencyChange={setCurrencyIn}
@@ -55,7 +55,6 @@ const SwapForm: React.FC = () => {
                 fiatAmount={fiatAmount}
                 balanceLabel='Balance'
                 balanceAmount={balance}
-                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
                 renderPercentageButtons
@@ -70,7 +69,6 @@ const SwapForm: React.FC = () => {
                 fiatAmount={fiatAmount}
                 balanceLabel='Balance'
                 balanceAmount={balance}
-                renderNativeToken
                 renderCurrencyBalance
                 renderCurrencySelector
               />

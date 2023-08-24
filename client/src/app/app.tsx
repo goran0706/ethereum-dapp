@@ -3,7 +3,13 @@ import { Dashboard } from '@libs/dashboard'
 import { LimitOrders } from '@libs/limit'
 import { LockForm, Locking, UnlockForm } from '@libs/locking'
 import { PageNotFound } from '@libs/page-not-found'
-import { StakeForm, Staking, UnstakeForm } from '@libs/staking'
+import {
+  AddAndStakeForm,
+  RemoveAndUnstake,
+  StakeForm,
+  Staking,
+  UnstakeForm
+} from '@libs/staking'
 import { Swap } from '@libs/swap'
 import { AppLayout } from '@shared/ui'
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit'
@@ -80,6 +86,8 @@ const App = () => {
                 />
                 <Route path='stake' element={<StakeForm />} />
                 <Route path='unstake' element={<UnstakeForm />} />
+                <Route path='add-stake' element={<AddAndStakeForm />} />
+                <Route path='remove-unstake' element={<RemoveAndUnstake />} />
               </Route>
               <Route path='swap' element={<Swap />} />
               <Route path='limit-orders' element={<LimitOrders />} />

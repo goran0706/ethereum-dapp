@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { defaultTokenSelection } from '@shared/constants'
 import { Token } from '@shared/models'
 import { create } from 'zustand'
@@ -10,7 +11,9 @@ export interface CurrencyState {
 }
 
 export const useCurrencySelect = create<CurrencyState>(set => ({
+  //@ts-ignore
   currencyIn: defaultTokenSelection,
+  //@ts-ignore
   currencyOut: defaultTokenSelection,
   setCurrencyIn: currencyIn => set({ currencyIn }),
   setCurrencyOut: currencyOut => set({ currencyOut })

@@ -24,7 +24,6 @@ const LimitOrderForm: React.FC = () => {
     currencyInAmount,
     currencyOutAmount,
     errorMessage,
-    isPermitOn,
     limitPrice,
     lockTime,
     handleBalancePercentageClick,
@@ -41,8 +40,9 @@ const LimitOrderForm: React.FC = () => {
   const { data: feeData } = useFeeData()
   const networkFee = feeData?.formatted.gasPrice
   const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
-  const rate = BigInt(1)
+  const rate = BigInt(1) // Todo: get rates
 
+  // Todo: tx details
   const txDetails = [{ label: 'Network Fee:', value: `~${networkFee}` }]
 
   useEffect(() => {
@@ -56,39 +56,40 @@ const LimitOrderForm: React.FC = () => {
         <Form>
           <Stack>
             <Stack gutter='md'>
-              <CurrencyInputPanel
-                currency={currencyIn}
-                onCurrencyChange={setCurrencyIn}
-                currencyAmount={currencyInAmount}
-                onCurrencyAmountChange={handleCurrencyInAmountChange}
-                fiatAmount={fiatAmount}
-                balanceLabel='Balance'
-                balanceAmount={balance}
-                renderNativeToken
-                renderCurrencyBalance
-                renderCurrencySelector
-                renderPercentageButtons
-                onPercentageClick={handleBalancePercentageClick}
-              />
-              <CurrencySwapButton onClick={handleCurrencySwap} />
-              <CurrencyInputPanel
-                currency={currencyOut}
-                onCurrencyChange={setCurrencyOut}
-                currencyAmount={currencyOutAmount}
-                onCurrencyAmountChange={handleCurrencyOutAmountChange}
-                fiatAmount={fiatAmount}
-                balanceLabel='Balance'
-                balanceAmount={balance}
-                renderNativeToken
-                renderCurrencyBalance
-                renderCurrencySelector
-              />
+              <Stack gutter='sm'>
+                <CurrencyInputPanel
+                  currency={currencyIn}
+                  onCurrencyChange={setCurrencyIn}
+                  currencyAmount={currencyInAmount}
+                  onCurrencyAmountChange={handleCurrencyInAmountChange}
+                  fiatAmount={fiatAmount}
+                  balanceLabel='Balance'
+                  balanceAmount={balance}
+                  renderCurrencyBalance
+                  renderCurrencySelector
+                  renderPercentageButtons
+                  onPercentageClick={handleBalancePercentageClick}
+                />
+                <CurrencySwapButton onClick={handleCurrencySwap} />
+                <CurrencyInputPanel
+                  currency={currencyOut}
+                  onCurrencyChange={setCurrencyOut}
+                  currencyAmount={currencyOutAmount}
+                  onCurrencyAmountChange={handleCurrencyOutAmountChange}
+                  fiatAmount={fiatAmount}
+                  balanceLabel='Balance'
+                  balanceAmount={balance}
+                  renderCurrencyBalance
+                  renderCurrencySelector
+                />
+              </Stack>
               <TargetPriceInputPanel
-                price={limitPrice}
-                onPriceChange={handleLimitPriceChange}
-                onSetToMarketPriceClick={handleSetToMarketPriceClick}
-                currencySymbol={currencyIn.symbol}
                 rate={rate}
+                price={limitPrice}
+                currency={currencyIn}
+                onPriceChange={handleLimitPriceChange}
+                onCurrencyChange={setCurrencyIn}
+                onSetToMarketPriceClick={handleSetToMarketPriceClick}
               />
             </Stack>
             {txDetails && <TransactionDetails items={txDetails} />}

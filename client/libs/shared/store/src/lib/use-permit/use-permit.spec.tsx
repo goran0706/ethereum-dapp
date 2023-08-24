@@ -1,7 +1,4 @@
 import { act, renderHook } from '@testing-library/react'
-import * as React from 'react'
-
-import usePermit from './use-permit'
 
 describe('usePermit', () => {
   it('should render successfully', () => {

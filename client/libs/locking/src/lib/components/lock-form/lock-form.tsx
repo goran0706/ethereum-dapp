@@ -1,5 +1,5 @@
 import { CLEAR_ALERT_DELAY, ContractsInfo } from '@shared/constants'
-import { useCurrencyForm, usePermit } from '@shared/hooks'
+import { useCurrencyForm, usePermitSignature } from '@shared/hooks'
 import { useCurrencySelect } from '@shared/store'
 import {
   AnchorInternal,
@@ -41,7 +41,12 @@ export function LockForm() {
   const spender = ContractsInfo.Locking.address
   const value = parseEther(currencyInAmount.toString())
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600)
-  const { generateSignature } = usePermit(token, spender, value, deadline)
+  const { generateSignature } = usePermitSignature(
+    token,
+    spender,
+    value,
+    deadline
+  )
 
   const { data: feeData } = useFeeData()
   const networkFee = feeData?.formatted.gasPrice
@@ -109,12 +114,9 @@ export function LockForm() {
   return (
     <Panel width='480px' height='fit-content'>
       <Stack>
-        <Flex justifyContent='space-between' alignItems='center'>
-          <Flex>
-            <AnchorInternal to='/locking/lock'>Lock</AnchorInternal>
-            <AnchorInternal to='/locking/unlock'>Unlock</AnchorInternal>
-          </Flex>
-          <PermitSwitch isOn={isPermitOn} onToggle={handleTogglePermit} />
+        <Flex alignItems='center'>
+          <AnchorInternal to='/locking/lock'>Lock</AnchorInternal>
+          <AnchorInternal to='/locking/unlock'>Unlock</AnchorInternal>
         </Flex>
         <Form>
           <Stack>
@@ -140,6 +142,7 @@ export function LockForm() {
             {errorMessage && (
               <TransactionAlert color='red' message={errorMessage} />
             )}
+            <PermitSwitch isOn={isPermitOn} onToggle={handleTogglePermit} />
             <Button
               size='large'
               type='submit'

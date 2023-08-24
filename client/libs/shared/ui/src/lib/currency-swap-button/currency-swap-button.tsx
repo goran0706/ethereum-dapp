@@ -9,7 +9,7 @@ export interface CurrencySwapButtonProps {
 }
 
 const StyledCurrencySwapButton = styled(Center)`
-  margin: -12px 0 -20px; /* Adjust margin values */
+  margin: -16px 0 -20px; /* Adjust margin values */
   height: fit-content;
   z-index: 1;
 

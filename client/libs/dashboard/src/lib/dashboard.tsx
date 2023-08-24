@@ -76,7 +76,7 @@ export function Dashboard(): JSX.Element {
   return (
     <Stack gutter='2xxl'>
       <Stack>
-        <Heading as='h1'>Welcome to [DApp]</Heading>
+        <Heading as='h1'>Welcome to LuminaX</Heading>
         <Grid $minItemWidth='260px' gutter='xl'>
           {featuresData.map(renderFeatureCard)}
         </Grid>

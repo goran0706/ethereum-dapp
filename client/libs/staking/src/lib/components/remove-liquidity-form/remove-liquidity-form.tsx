@@ -21,7 +21,7 @@ import {
   useFeeData
 } from 'wagmi'
 
-export function UnstakeForm() {
+export function RemoveAndUnstake() {
   const { currencyIn, setCurrencyIn } = useCurrencySelect()
   const {
     currencyInAmount,
@@ -41,7 +41,7 @@ export function UnstakeForm() {
   const fiatAmount = BigInt(1800) // Todo: fix... fetch and show actual tokenToFiat conversion
 
   const { data: exitFee } = useContractRead({
-    ...ContractsInfo.Locking,
+    ...ContractsInfo.Staking,
     functionName: 'exitFeePercentage'
   })
 
@@ -50,20 +50,32 @@ export function UnstakeForm() {
     { label: 'Exit Fee:', value: `${formatEther(exitFee ?? BigInt(0))}%` }
   ]
 
-  const { writeAsync: unstake, isLoading: isLoadingUnstake } = useContractWrite(
-    { ...ContractsInfo.Staking, functionName: 'unstake' }
-  )
+  const {
+    writeAsync: removeLiquidityAndUnstake,
+    isLoading: isLoadingRemoveLiquidity
+  } = useContractWrite({
+    ...ContractsInfo.Staking,
+    functionName: 'removeLiquidityAndUnstake'
+  })
 
   useEffect(() => {
     const id = setTimeout(handleErrorClear, CLEAR_ALERT_DELAY)
     return () => clearTimeout(id)
   }, [handleErrorClear])
 
-  const handleUnstake = async (): Promise<void> => {
+  const handleRemoveLiquidityAndUnstake = async (): Promise<void> => {
     if (isConnected && beneficiary) {
       try {
-        await unstake({
-          args: [ContractsInfo.Token.address, parseEther(currencyInAmount)]
+        // Todo: LP token address, minAmountA, minAmountB
+        const minA = parseEther(currencyInAmount) / BigInt(2)
+        const minB = minA
+        await removeLiquidityAndUnstake({
+          args: [
+            ContractsInfo.Token.address,
+            parseEther(currencyInAmount),
+            minA,
+            minB
+          ]
         })
         incrementBalance(BigInt(currencyInAmount))
       } catch (err) {
@@ -83,7 +95,7 @@ export function UnstakeForm() {
             Remove Liquidity
           </AnchorInternal>
         </Flex>
-        <Form onSubmit={e => handleSubmit(e, handleUnstake)}>
+        <Form onSubmit={e => handleSubmit(e, handleRemoveLiquidityAndUnstake)}>
           <Stack>
             <CurrencyInputPanel
               currency={currencyIn}
@@ -105,11 +117,11 @@ export function UnstakeForm() {
             <Button
               size='large'
               type='submit'
-              isLoading={isLoadingUnstake}
+              isLoading={isLoadingRemoveLiquidity}
               disabled={!isConnected || !beneficiary || !currencyInAmount}
-              onClick={handleUnstake}
+              onClick={handleRemoveLiquidityAndUnstake}
             >
-              Unstake
+              Remove Liquidity & Unstake
             </Button>
           </Stack>
         </Form>
@@ -118,4 +130,4 @@ export function UnstakeForm() {
   )
 }
 
-export default UnstakeForm
+export default RemoveAndUnstake

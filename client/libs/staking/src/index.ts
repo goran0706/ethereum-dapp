@@ -1,3 +1,5 @@
+export * from './lib/components/add-liquidity-form/add-liquidity-form'
+export * from './lib/components/remove-liquidity-form/remove-liquidity-form'
 export * from './lib/components/stake-form/stake-form'
 export * from './lib/components/staking-content/staking-content'
 export * from './lib/components/unstake-form/unstake-form'
