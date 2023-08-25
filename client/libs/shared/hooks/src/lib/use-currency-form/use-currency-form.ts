@@ -175,13 +175,13 @@ export function useCurrencyForm(): CurrencyFormProps {
 
   useEffect(() => {
     if (balanceLMX) {
-      updateState(ActionTypes.SET_BALANCE, balanceLMX.formatted)
+      updateState(ActionTypes.SET_BALANCE, balanceLMX.value) // WEI
     }
     if (lockedLMX) {
-      updateState(ActionTypes.SET_LOCKED, BigInt(formatEther(lockedLMX[0])))
+      updateState(ActionTypes.SET_LOCKED, lockedLMX[0]) // wei
     }
     if (stakedLMX) {
-      updateState(ActionTypes.SET_LOCKED, BigInt(formatEther(stakedLMX)))
+      updateState(ActionTypes.SET_LOCKED, stakedLMX) // wei
     }
   }, [balanceLMX, lockedLMX, stakedLMX])
 
@@ -245,7 +245,7 @@ export function useCurrencyForm(): CurrencyFormProps {
     const button = e.currentTarget
     const percent = parseFloat(button.dataset.percent || '0')
     const amount = (BigInt(balance) * BigInt(percent)) / BigInt(100) // balance
-    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, amount.toString())
+    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, formatEther(amount)) // 1e18
   }
 
   const handleStakedPercentageClick = (
@@ -255,7 +255,7 @@ export function useCurrencyForm(): CurrencyFormProps {
     const button = e.currentTarget
     const percent = parseFloat(button.dataset.percent || '0')
     const amount = (BigInt(staked) * BigInt(percent)) / BigInt(100) // staked
-    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, amount.toString())
+    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, formatEther(amount))
   }
 
   const handleLockedPercentageClick = (
@@ -265,7 +265,7 @@ export function useCurrencyForm(): CurrencyFormProps {
     const button = e.currentTarget
     const percent = parseFloat(button.dataset.percent || '0')
     const amount = (BigInt(locked) * BigInt(percent)) / BigInt(100) // locked
-    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, amount.toString())
+    updateState(ActionTypes.SET_CURRENCY_IN_AMOUNT, formatEther(amount))
   }
 
   const handleResetLockTime = () => {

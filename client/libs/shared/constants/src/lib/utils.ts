@@ -1,1 +1,1 @@
-export const CLEAR_ALERT_DELAY = 6000
+export const CLEAR_ALERT_DELAY = 4000

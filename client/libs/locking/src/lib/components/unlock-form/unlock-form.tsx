@@ -12,7 +12,7 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { formatEther } from 'viem'
 import {
   useAccount,
@@ -61,7 +61,9 @@ export function UnlockForm() {
     return () => clearTimeout(id)
   }, [handleErrorClear])
 
-  const handleUnlock = async (): Promise<void> => {
+  const handleUnlock = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
+
     if (isConnected && beneficiary) {
       try {
         await unlockTokens({ args: [ContractsInfo.Token.address] })
@@ -80,7 +82,7 @@ export function UnlockForm() {
           <AnchorInternal to='/locking/unlock'>Unlock</AnchorInternal>
         </Flex>
         <Form>
-          <Stack>
+          <Stack gutter='sm'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}

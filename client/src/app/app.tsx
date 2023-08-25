@@ -11,7 +11,7 @@ import {
   UnstakeForm
 } from '@libs/staking'
 import { Swap } from '@libs/swap'
-import { AppLayout } from '@shared/ui'
+import { AppLayout, ProtectedRoute } from '@shared/ui'
 import { ConnectKitProvider, getDefaultConfig } from 'connectkit'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { useDarkMode } from 'usehooks-ts'
@@ -91,7 +91,14 @@ const App = () => {
               </Route>
               <Route path='swap' element={<Swap />} />
               <Route path='limit-orders' element={<LimitOrders />} />
-              <Route path='account' element={<Account />} />
+              <Route
+                path='account'
+                element={
+                  <ProtectedRoute>
+                    <Account />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route path='*' element={<PageNotFound />} />
           </Routes>

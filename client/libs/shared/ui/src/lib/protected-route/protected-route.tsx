@@ -1,19 +1,31 @@
+import { ReactNode } from 'react'
 import styled from 'styled-components'
+import { useAccount } from 'wagmi'
 
-/* eslint-disable-next-line */
-export interface ProtectedRouteProps {}
+import Center from '../center/center'
+import ConnectButton from '../connect-button/connect-button'
+import Text from '../text/text'
 
-const StyledProtectedRoute = styled.div`
-  color: pink;
+const StyledFallback = styled(Center)`
+  margin-top: 4rem;
+  gap: 2rem;
 `
 
-/* TODO: Protected route */
-export function ProtectedRoute(props: ProtectedRouteProps) {
+const Fallback = () => {
   return (
-    <StyledProtectedRoute>
-      <h1>Welcome to ProtectedRoute!</h1>
-    </StyledProtectedRoute>
+    <StyledFallback $centerChildren $centerText>
+      <Text>
+        No wallet connected yet. Please connect in order to interact with the
+        application.
+      </Text>
+      <ConnectButton />
+    </StyledFallback>
   )
+}
+
+export function ProtectedRoute({ children }: { children: ReactNode }) {
+  const { isConnected } = useAccount()
+  return isConnected ? children : <Fallback />
 }
 
 export default ProtectedRoute

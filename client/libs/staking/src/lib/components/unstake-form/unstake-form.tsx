@@ -12,7 +12,7 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { formatEther, parseEther } from 'viem'
 import {
   useAccount,
@@ -27,12 +27,11 @@ export function UnstakeForm() {
     currencyInAmount,
     errorMessage,
     incrementBalance,
-    locked,
+    staked,
     handleCurrencyInAmountChange,
-    handleLockedPercentageClick,
+    handleStakedPercentageClick,
     handleError,
-    handleErrorClear,
-    handleSubmit
+    handleErrorClear
   } = useCurrencyForm()
 
   const { isConnected, address: beneficiary } = useAccount()
@@ -59,7 +58,9 @@ export function UnstakeForm() {
     return () => clearTimeout(id)
   }, [handleErrorClear])
 
-  const handleUnstake = async (): Promise<void> => {
+  const handleUnstake = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
+
     if (isConnected && beneficiary) {
       try {
         await unstake({
@@ -83,8 +84,8 @@ export function UnstakeForm() {
             Remove Liquidity
           </AnchorInternal>
         </Flex>
-        <Form onSubmit={e => handleSubmit(e, handleUnstake)}>
-          <Stack>
+        <Form>
+          <Stack gutter='sm'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}
@@ -92,11 +93,11 @@ export function UnstakeForm() {
               onCurrencyAmountChange={handleCurrencyInAmountChange}
               fiatAmount={fiatAmount}
               balanceLabel='Staked'
-              balanceAmount={locked}
+              balanceAmount={staked}
               renderNativeToken
               renderCurrencyBalance
               renderPercentageButtons
-              onPercentageClick={handleLockedPercentageClick}
+              onPercentageClick={handleStakedPercentageClick}
             />
             {txDetails && <TransactionDetails items={txDetails} />}
             {errorMessage && (

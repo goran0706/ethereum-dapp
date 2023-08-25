@@ -9,7 +9,11 @@ import useAccountBalances from './use-account-balances/use-account-balances'
 const AccountBalances = () => {
   const balances = useAccountBalances()
   const { isCurrencyMasked } = useCurrencyMask()
-  const { data } = useToken({ address: ContractsInfo.Token.address })
+  const { data, isError } = useToken({
+    address: ContractsInfo.Token.address
+  })
+
+  if (isError) return null
 
   const renderBalanceStat = (label: string, value: number, color: string) => (
     <Stat

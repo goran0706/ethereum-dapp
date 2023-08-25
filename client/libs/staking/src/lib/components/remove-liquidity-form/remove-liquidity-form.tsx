@@ -12,7 +12,7 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { formatEther, parseEther } from 'viem'
 import {
   useAccount,
@@ -27,12 +27,11 @@ export function RemoveAndUnstake() {
     currencyInAmount,
     errorMessage,
     incrementBalance,
-    locked,
+    staked,
     handleCurrencyInAmountChange,
-    handleLockedPercentageClick,
+    handleStakedPercentageClick,
     handleError,
-    handleErrorClear,
-    handleSubmit
+    handleErrorClear
   } = useCurrencyForm()
 
   const { isConnected, address: beneficiary } = useAccount()
@@ -63,7 +62,11 @@ export function RemoveAndUnstake() {
     return () => clearTimeout(id)
   }, [handleErrorClear])
 
-  const handleRemoveLiquidityAndUnstake = async (): Promise<void> => {
+  const handleRemoveLiquidityAndUnstake = async (
+    e: FormEvent
+  ): Promise<void> => {
+    e.preventDefault()
+
     if (isConnected && beneficiary) {
       try {
         // Todo: LP token address, minAmountA, minAmountB
@@ -95,8 +98,8 @@ export function RemoveAndUnstake() {
             Remove Liquidity
           </AnchorInternal>
         </Flex>
-        <Form onSubmit={e => handleSubmit(e, handleRemoveLiquidityAndUnstake)}>
-          <Stack>
+        <Form>
+          <Stack gutter='sm'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}
@@ -104,11 +107,11 @@ export function RemoveAndUnstake() {
               onCurrencyAmountChange={handleCurrencyInAmountChange}
               fiatAmount={fiatAmount}
               balanceLabel='Staked'
-              balanceAmount={locked}
+              balanceAmount={staked}
               renderNativeToken
               renderCurrencyBalance
               renderPercentageButtons
-              onPercentageClick={handleLockedPercentageClick}
+              onPercentageClick={handleStakedPercentageClick}
             />
             {txDetails && <TransactionDetails items={txDetails} />}
             {errorMessage && (

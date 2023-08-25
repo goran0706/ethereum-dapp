@@ -13,12 +13,13 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { parseEther } from 'viem'
 import { useAccount, useContractWrite, useFeeData } from 'wagmi'
 
 export function AddAndStakeForm() {
-  const { currencyIn, setCurrencyIn, currencyOut } = useCurrencySelect()
+  const { currencyIn, setCurrencyIn, currencyOut, setCurrencyOut } =
+    useCurrencySelect()
   const {
     balance,
     currencyInAmount,
@@ -28,6 +29,7 @@ export function AddAndStakeForm() {
     isPermitOn,
     lockTime,
     handleCurrencyInAmountChange,
+    handleCurrencyOutAmountChange,
     handleBalancePercentageClick,
     handleTogglePermit,
     handleError,
@@ -65,7 +67,8 @@ export function AddAndStakeForm() {
     return () => clearTimeout(id)
   }, [errorMessage, handleErrorClear])
 
-  const handleAddLiquidityAndStakeWithPermit = async () => {
+  const handleAddLiquidityAndStakeWithPermit = async (e: FormEvent) => {
+    e.preventDefault()
     try {
       const signature = await generateSignature()
       if (signature) {
@@ -101,12 +104,25 @@ export function AddAndStakeForm() {
           </AnchorInternal>
         </Flex>
         <Form>
-          <Stack>
+          <Stack gutter='md'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}
               currencyAmount={currencyInAmount}
               onCurrencyAmountChange={handleCurrencyInAmountChange}
+              fiatAmount={fiatAmount}
+              balanceLabel='Balance'
+              balanceAmount={balance}
+              renderNativeToken
+              renderCurrencyBalance
+              renderPercentageButtons
+              onPercentageClick={handleBalancePercentageClick}
+            />
+            <CurrencyInputPanel
+              currency={currencyOut}
+              onCurrencyChange={setCurrencyOut}
+              currencyAmount={currencyOutAmount}
+              onCurrencyAmountChange={handleCurrencyOutAmountChange}
               fiatAmount={fiatAmount}
               balanceLabel='Balance'
               balanceAmount={balance}

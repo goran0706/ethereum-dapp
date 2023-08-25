@@ -1,5 +1,5 @@
 import { useCurrencyMask } from '@shared/store'
-import { Flex, Mask, Text } from '@shared/ui'
+import { ConnectButton, Flex, Mask, Text } from '@shared/ui'
 import { Avatar } from 'connectkit'
 import styled from 'styled-components'
 import { useAccount, useEnsAvatar, useEnsName } from 'wagmi'
@@ -19,6 +19,10 @@ export const Profile = () => {
   const { address } = useAccount()
   const { data: ensName } = useEnsName({ address })
   const { data: ensAvatar } = useEnsAvatar({ name: ensName })
+
+  if (!address) {
+    return <ConnectButton />
+  }
 
   return (
     <ProfileContainer

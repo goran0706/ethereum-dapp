@@ -2,6 +2,7 @@ import { Token } from '@shared/models'
 import { commafy } from '@utils'
 import { ChangeEvent } from 'react'
 import styled from 'styled-components'
+import { formatEther } from 'viem'
 
 import Button from '../button/button'
 import CurrencySelect from '../currency-select-box/currency-select-box'
@@ -139,7 +140,7 @@ export function CurrencyInputPanel({
           <FiatAmountText align='left'>{`~$${fiatAmount}`}</FiatAmountText>
           {balanceLabel && (
             <BalanceAmountText align='right'>{`${balanceLabel}: ${commafy(
-              balanceAmount
+              formatEther(balanceAmount)
             )}`}</BalanceAmountText>
           )}
         </Row>

@@ -1,5 +1,6 @@
 import hre from "hardhat";
 import {
+  EXIT_FEE,
   FACTORY_ADDRESS,
   LMX,
   LOCKING,
@@ -17,6 +18,7 @@ export async function deployContracts() {
   // Locking Contract
   const locking = await hre.ethers.deployContract("Locking", [[token.target]]);
   await locking.waitForDeployment();
+  await locking.setExitFee(EXIT_FEE);
   console.log(`Locking deployed to ${locking.target}`);
 
   // Staking Contract
@@ -26,6 +28,7 @@ export async function deployContracts() {
     ROUTER_ADDRESS,
   ]);
   await staking.waitForDeployment();
+  await staking.setExitFee(EXIT_FEE);
   console.log(`Staking deployed to ${staking.target}`);
 
   // Contract Registry Contract

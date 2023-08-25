@@ -46,16 +46,18 @@ const useAccountBalances = () => {
         lmxBalances[1]?.result as { amount: bigint }
       )?.amount
       const lmxStakedBalanceBigint = lmxBalances[2]?.result as bigint
-      const lmxBalance = Number(formatEther(lmxBalanceBigint))
-      const lmxLockedBalance = Number(formatEther(lmxLockedBalanceBigint))
-      const lmxStakedBalance = Number(formatEther(lmxStakedBalanceBigint))
+
+      const lmxBalance = formatEther(lmxBalanceBigint ?? BigInt(0))
+      const lmxLockedBalance = formatEther(lmxLockedBalanceBigint ?? BigInt(0))
+      const lmxStakedBalance = formatEther(lmxStakedBalanceBigint ?? BigInt(0))
+
       const netWorth = lmxBalance + lmxLockedBalance + lmxStakedBalance
 
       setBalances({
-        lmxBalance,
-        lmxLockedBalance,
-        lmxStakedBalance,
-        netWorth
+        lmxBalance: Number(lmxBalance),
+        lmxLockedBalance: Number(lmxLockedBalance),
+        lmxStakedBalance: Number(lmxStakedBalance),
+        netWorth: Number(netWorth)
       })
     }
   }, [lmxBalances])

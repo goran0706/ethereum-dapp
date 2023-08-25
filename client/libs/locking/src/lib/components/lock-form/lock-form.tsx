@@ -14,7 +14,7 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { parseEther } from 'viem'
 import { useAccount, useContractWrite, useFeeData } from 'wagmi'
 
@@ -39,8 +39,9 @@ export function LockForm() {
   const { isConnected, address: beneficiary } = useAccount()
   const token = ContractsInfo.Token.address
   const spender = ContractsInfo.Locking.address
-  const value = parseEther(currencyInAmount.toString())
+  const value = parseEther(currencyInAmount) // WEI
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600)
+
   const { generateSignature } = usePermitSignature(
     token,
     spender,
@@ -73,7 +74,8 @@ export function LockForm() {
     return () => clearTimeout(id)
   }, [errorMessage, handleErrorClear])
 
-  const handleLockTokens = async (): Promise<void> => {
+  const handleLockTokens = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
     try {
       if (isConnected && beneficiary) {
         await approve({ args: [spender, value] })
@@ -85,7 +87,8 @@ export function LockForm() {
     }
   }
 
-  const handleLockTokensWithPermit = async () => {
+  const handleLockTokensWithPermit = async (e: FormEvent) => {
+    e.preventDefault()
     if (isConnected && beneficiary) {
       try {
         const signature = await generateSignature()
@@ -119,7 +122,7 @@ export function LockForm() {
           <AnchorInternal to='/locking/unlock'>Unlock</AnchorInternal>
         </Flex>
         <Form>
-          <Stack>
+          <Stack gutter='sm'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}
@@ -138,11 +141,11 @@ export function LockForm() {
               onChange={handleLockTimeChange}
               onReset={handleResetLockTime}
             />
+            <PermitSwitch isOn={isPermitOn} onToggle={handleTogglePermit} />
             {txDetails && <TransactionDetails items={txDetails} />}
             {errorMessage && (
               <TransactionAlert color='red' message={errorMessage} />
             )}
-            <PermitSwitch isOn={isPermitOn} onToggle={handleTogglePermit} />
             <Button
               size='large'
               type='submit'

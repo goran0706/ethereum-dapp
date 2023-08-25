@@ -13,7 +13,7 @@ import {
   TransactionAlert,
   TransactionDetails
 } from '@shared/ui'
-import { useEffect } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { parseEther } from 'viem'
 import { useAccount, useContractWrite, useFeeData } from 'wagmi'
 
@@ -71,7 +71,9 @@ export function StakeForm() {
     return () => clearTimeout(id)
   }, [errorMessage, handleErrorClear])
 
-  const handleStake = async (): Promise<void> => {
+  const handleStake = async (e: FormEvent): Promise<void> => {
+    e.preventDefault()
+
     try {
       await approve({ args: [spender, value] })
       await stake({ args: [token, value] })
@@ -81,7 +83,9 @@ export function StakeForm() {
     }
   }
 
-  const handleStakeWithPermit = async () => {
+  const handleStakeWithPermit = async (e: FormEvent) => {
+    e.preventDefault()
+
     try {
       const signature = await generateSignature()
       if (signature) {
@@ -108,7 +112,7 @@ export function StakeForm() {
           </AnchorInternal>
         </Flex>
         <Form>
-          <Stack>
+          <Stack gutter='sm'>
             <CurrencyInputPanel
               currency={currencyIn}
               onCurrencyChange={setCurrencyIn}

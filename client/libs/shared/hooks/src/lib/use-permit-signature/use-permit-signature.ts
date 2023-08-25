@@ -1,7 +1,7 @@
 import { ContractsInfo } from '@shared/constants'
 import { PermitConfig } from '@shared/models'
 import { Address, Signature, hexToSignature, zeroAddress } from 'viem'
-import { useContractRead, useNetwork, useToken, useWalletClient } from 'wagmi'
+import { useNetwork, usePublicClient, useToken, useWalletClient } from 'wagmi'
 
 export function usePermitSignature(
   token: Address,
@@ -11,21 +11,30 @@ export function usePermitSignature(
   permitConfig?: PermitConfig
 ) {
   const { chain } = useNetwork()
+  const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
   const { data: tokenInfo } = useToken({ address: token })
-
-  const { data: nonce } = useContractRead({
-    ...ContractsInfo.Token,
-    functionName: 'nonces',
-    args: [walletClient?.account.address ?? zeroAddress]
-  })
+  const owner = walletClient?.account.address ?? zeroAddress
 
   const generateSignature = async (): Promise<Signature | undefined> => {
-    if (!walletClient || !tokenInfo || nonce === undefined) {
+    if (
+      owner === zeroAddress ||
+      !owner ||
+      !spender ||
+      !walletClient ||
+      !tokenInfo ||
+      !value
+    ) {
       return undefined
     }
 
     try {
+      const nonce = await publicClient.readContract({
+        ...ContractsInfo.Token,
+        functionName: 'nonces',
+        args: [walletClient?.account.address ?? zeroAddress]
+      })
+
       const permitData = {
         domain: {
           name: permitConfig?.name ?? tokenInfo.name,
@@ -44,7 +53,7 @@ export function usePermitSignature(
         },
         primaryType: 'Permit' as const,
         message: {
-          owner: walletClient.account.address,
+          owner,
           spender,
           value,
           nonce,

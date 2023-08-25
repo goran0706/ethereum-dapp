@@ -6,10 +6,10 @@ import { formatEther, parseAbi } from 'viem'
 import { useAccount, useNetwork, usePublicClient } from 'wagmi'
 
 export const AccountActivity = () => {
-  const { address } = useAccount()
-  const { chain } = useNetwork()
-  const publicClient = usePublicClient()
   const [activity, setActivity] = useState<any[]>([])
+  const { chain } = useNetwork()
+  const { address } = useAccount()
+  const publicClient = usePublicClient()
 
   useEffect(() => {
     if (!address) return
@@ -60,6 +60,8 @@ export const AccountActivity = () => {
 
     fetchLogs()
   }, [address, publicClient])
+
+  if (!address) return null
 
   return (
     <Stack>

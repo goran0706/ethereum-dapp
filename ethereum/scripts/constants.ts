@@ -5,7 +5,7 @@ export const currentTimestamp = Math.floor(Date.now() / 1000);
 export const lockTimeInSeconds = 30 * 24 * 60 * 60;
 export const UNLOCK_TIMESTAMP = currentTimestamp + lockTimeInSeconds;
 export const PRE_MINT = 100_000_000; // Token supply * 18 decimals
-export const EXIT_FEE = hre.ethers.parseEther("1");
+export const EXIT_FEE = hre.ethers.parseEther("1"); // 1%
 
 // Uniswap Contracts
 export const FACTORY_ADDRESS = "0x1F98431c8aD98523631AE4a59f267346ea31F984"; // Uniswap Factory address

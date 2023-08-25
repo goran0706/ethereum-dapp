@@ -1,10 +1,20 @@
 import { ContractRegistryABI, LockingABI, StakingABI, TokenABI } from '@abis'
 
-enum ContractAddresses {
-  Token = '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-  Locking = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
-  Staking = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-  ContractRegistry = '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+const env = import.meta.env
+const {
+  VITE_TOKEN_ADDRESS,
+  VITE_LOCKING_ADDRESS,
+  VITE_STAKING_ADDRESS,
+  VITE_CONTRACT_REGISTRY_ADDRESS
+} = env
+
+const ContractAddresses = {
+  Token: VITE_TOKEN_ADDRESS,
+  Locking: VITE_LOCKING_ADDRESS,
+  Staking: VITE_STAKING_ADDRESS,
+  ContractRegistry: VITE_CONTRACT_REGISTRY_ADDRESS
 }
 
 export const ContractsInfo = {
